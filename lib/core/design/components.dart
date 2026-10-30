@@ -86,6 +86,46 @@ class CardBox extends StatelessWidget {
       );
 }
 
+/// Logo Lentera: huruf L di atas bidang kuning, sama dengan ikon aplikasi.
+class LogoMark extends StatelessWidget {
+  const LogoMark({super.key, this.size = 96});
+
+  final double size;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+        label: 'Logo Lentera',
+        excludeSemantics: true,
+        child: Container(
+          width: size,
+          height: size,
+          decoration: BoxDecoration(color: AppColors.lantern, borderRadius: BorderRadius.circular(size * 0.26)),
+          child: CustomPaint(painter: _LogoPainter()),
+        ),
+      );
+}
+
+class _LogoPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size s) {
+    final u = s.width / 108;
+    canvas.drawPath(
+      Path()
+        ..moveTo(38 * u, 28 * u)
+        ..lineTo(51 * u, 28 * u)
+        ..lineTo(51 * u, 67 * u)
+        ..lineTo(70 * u, 67 * u)
+        ..lineTo(70 * u, 80 * u)
+        ..lineTo(38 * u, 80 * u)
+        ..close(),
+      Paint()..color = AppColors.ink,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_LogoPainter oldDelegate) => false;
+}
+
 /// Bidang warna utama tempat kata tampil. Warnanya berpindah saat kata terbaca.
 class WordField extends StatelessWidget {
   const WordField({super.key, required this.child, required this.color, this.height = 360});

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/providers.dart';
+import '../../core/design/components.dart';
 import '../../core/design/tokens.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -42,6 +43,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              const LogoMark(size: 112),
+              const SizedBox(height: 20),
               Text('Lentera', style: AppText.wordHero.copyWith(color: Colors.white, fontSize: 52)),
               const SizedBox(height: 10),
               Text('Belajar membaca, pelan-pelan', style: AppText.body.copyWith(color: const Color(0xFFE6EEF0))),

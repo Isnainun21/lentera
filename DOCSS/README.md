@@ -30,3 +30,15 @@ Folder ini sumber kebenaran untuk rombak aplikasi. Kode belum diubah. Implementa
 2. **Ilustrasi:** referensi mengandalkan gambar besar. Dari mana sumbernya: Anda sediakan, kita buat dengan generator gambar, atau bentuk sederhana yang digambar dengan kode? Sampai ada jawaban, rencana memakai bidang warna polos sebagai placeholder yang jelas.
 3. **Warna salah:** PRD meminta suku kata meleset ditandai merah. Rencana ini memakai kuning tua dengan ikon telinga, supaya anak tidak merasa dihukum. Setujukah menyimpang dari PRD di bagian ini?
 4. **Mitra uji:** apakah ada anak, relawan, atau SLB untuk merekam sampel suara di Fase 1?
+
+## Status implementasi (31 Oktober 2026)
+
+| Fase | Status |
+|---|---|
+| 0 Pengaman | Selesai, kecuali `applicationId` final |
+| 1 Uji ucapan | Alat uji ada di Area Pendamping. Belum diuji dengan suara sungguhan |
+| 2 Fondasi | Selesai |
+| 3 dan 4 Sisi anak | Selesai, termasuk masuk dan keluar dengan nama |
+| 5 Area Pendamping | Selesai, tampilan belum diperiksa di perangkat |
+| 6 dan 7 Backend dan sinkron | Kode dan skema SQL selesai, diuji dengan server tiruan. Belum dijalankan pada Supabase sungguhan |
+| 8 Finalisasi | Belum. APK masih ditandatangani kunci debug |

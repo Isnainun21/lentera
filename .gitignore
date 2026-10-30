@@ -53,3 +53,5 @@ app.*.map.json
 
 # Riwayat kerja skill taste
 /.taste-skill/
+
+/dist/
