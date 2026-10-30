@@ -86,80 +86,100 @@ class CardBox extends StatelessWidget {
       );
 }
 
-/// Bentuk lengkung lentera: puncak setengah lingkaran, bawah membulat.
-class LanternShape extends ShapeBorder {
-  const LanternShape({this.bottomRadius = 24});
-
-  final double bottomRadius;
-
-  @override
-  EdgeInsetsGeometry get dimensions => EdgeInsets.zero;
-
-  @override
-  Path getInnerPath(Rect rect, {TextDirection? textDirection}) => getOuterPath(rect, textDirection: textDirection);
-
-  @override
-  Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
-    final top = Radius.circular(rect.width / 2 > rect.height * 0.6 ? rect.height * 0.6 : rect.width / 2);
-    return Path()
-      ..addRRect(RRect.fromRectAndCorners(
-        rect,
-        topLeft: top,
-        topRight: top,
-        bottomLeft: Radius.circular(bottomRadius),
-        bottomRight: Radius.circular(bottomRadius),
-      ));
-  }
-
-  @override
-  void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {}
-
-  @override
-  ShapeBorder scale(double t) => LanternShape(bottomRadius: bottomRadius * t);
-}
-
-/// Bingkai kata. [light] 0 sampai 1 adalah cahaya yang mengisi dari bawah.
-class LanternFrame extends StatelessWidget {
-  const LanternFrame({super.key, required this.child, this.light = 0, this.color = AppColors.surface, this.height});
+/// Bidang warna utama tempat kata tampil. Warnanya berpindah saat kata terbaca.
+class WordField extends StatelessWidget {
+  const WordField({super.key, required this.child, required this.color, this.height = 360});
 
   final Widget child;
-  final double light;
   final Color color;
-  final double? height;
+  final double height;
 
   @override
-  Widget build(BuildContext context) {
-    final duration = motionReduced(context) ? Duration.zero : const Duration(milliseconds: 400);
-    return ClipPath(
-      clipper: ShapeBorderClipper(shape: const LanternShape()),
-      child: Container(
+  Widget build(BuildContext context) => AnimatedContainer(
+        duration: motionReduced(context) ? Duration.zero : const Duration(milliseconds: 320),
+        curve: Curves.easeOutCubic,
         height: height,
         width: double.infinity,
-        color: color,
-        child: Stack(
-          fit: height == null ? StackFit.passthrough : StackFit.expand,
-          children: [
-            Positioned.fill(
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: TweenAnimationBuilder<double>(
-                  tween: Tween(end: light.clamp(0.0, 1.0)),
-                  duration: duration,
-                  curve: Curves.easeOut,
-                  builder: (_, v, _) => FractionallySizedBox(
-                    heightFactor: v,
-                    widthFactor: 1,
-                    child: const ColoredBox(color: AppColors.lantern),
-                  ),
-                ),
-              ),
-            ),
-            child,
-          ],
+        decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(AppSpace.cardRadius)),
+        child: child,
+      );
+}
+
+/// Tombol bulat kecil di atas gambar atau di header.
+class RoundButton extends StatelessWidget {
+  const RoundButton({super.key, required this.icon, required this.label, required this.onPressed, this.color = AppColors.surface, this.foreground = AppColors.ink});
+
+  final IconData icon;
+  final String label;
+  final VoidCallback? onPressed;
+  final Color color;
+  final Color foreground;
+
+  @override
+  Widget build(BuildContext context) => IconButton(
+        tooltip: label,
+        onPressed: onPressed,
+        icon: Icon(icon, color: foreground),
+        style: IconButton.styleFrom(backgroundColor: color, minimumSize: const Size(AppSpace.tapGuardian, AppSpace.tapGuardian)),
+      );
+}
+
+/// Cincin satu hari. Hari kosong tetap netral.
+class DayRing extends StatelessWidget {
+  const DayRing({super.key, required this.done, this.size = 36, this.today = false});
+
+  final bool done;
+  final bool today;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: done ? AppColors.leaf : Colors.transparent,
+          border: Border.all(color: done ? AppColors.leaf : (today ? AppColors.ink : AppColors.idle), width: 3.5),
         ),
-      ),
-    );
-  }
+        child: done ? Icon(Icons.check_rounded, size: size * 0.6, color: AppColors.ink) : null,
+      );
+}
+
+/// Baris aktivitas: lingkaran ikon besar dengan label.
+class ActivityCircle extends StatelessWidget {
+  const ActivityCircle({super.key, required this.icon, required this.label, required this.color, required this.onTap});
+
+  final IconData icon;
+  final String label;
+  final Color color;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+        button: true,
+        label: label,
+        excludeSemantics: true,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(AppSpace.tileRadius),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 68,
+                  height: 68,
+                  decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+                  child: Icon(icon, size: 32, color: AppColors.ink),
+                ),
+                const SizedBox(height: 8),
+                Text(label, style: AppText.caption.copyWith(color: AppColors.ink), textAlign: TextAlign.center),
+              ],
+            ),
+          ),
+        ),
+      );
 }
 
 enum TileState { idle, correct, retry }
@@ -175,7 +195,7 @@ class SyllableTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (bg, fg, icon, stateLabel) = switch (state) {
-      TileState.idle => (AppColors.idle, AppColors.ink, null, ''),
+      TileState.idle => (AppColors.surface, AppColors.ink, null, ''),
       TileState.correct => (AppColors.okSoft, AppColors.ok, Icons.check_rounded, ', tepat'),
       TileState.retry => (AppColors.retrySoft, AppColors.retry, Icons.hearing_rounded, ', coba lagi'),
     };
@@ -258,7 +278,7 @@ class AvatarCircle extends StatelessWidget {
       );
 }
 
-/// Tujuh lentera kecil. Hari kosong tetap netral, tidak ada streak yang putus.
+/// Tujuh cincin mingguan.
 class WeekLanterns extends StatelessWidget {
   const WeekLanterns({super.key, required this.lit});
 
@@ -268,8 +288,9 @@ class WeekLanterns extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final count = lit.where((x) => x).length;
+    final today = DateTime.now().weekday - 1;
     return Semantics(
-      label: 'Lentera minggu ini: $count hari menyala',
+      label: 'Minggu ini: berlatih $count hari',
       excludeSemantics: true,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -278,20 +299,9 @@ class WeekLanterns extends StatelessWidget {
             Expanded(
               child: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    child: SizedBox(
-                      height: 40,
-                      child: LanternFrame(
-                        color: AppColors.idle,
-                        light: lit[i] ? 1 : 0,
-                        height: 40,
-                        child: const SizedBox.shrink(),
-                      ),
-                    ),
-                  ),
+                  DayRing(done: lit[i], today: i == today),
                   const SizedBox(height: 6),
-                  Text(_days[i], style: AppText.caption, overflow: TextOverflow.visible, softWrap: false),
+                  Text(_days[i], style: AppText.caption.copyWith(fontSize: 13), softWrap: false, overflow: TextOverflow.visible),
                 ],
               ),
             ),

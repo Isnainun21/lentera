@@ -19,7 +19,7 @@ final routerProvider = Provider<GoRouter>((ref) => GoRouter(
       initialLocation: '/',
       routes: [
         GoRoute(path: '/', builder: (_, _) => const SplashScreen()),
-        GoRoute(path: '/setup', builder: (_, s) => SetupScreen(addingChild: s.uri.queryParameters['add'] == '1')),
+        GoRoute(path: '/setup', builder: (_, s) => SetupScreen(addingChild: s.uri.queryParameters['add'] == '1', name: s.uri.queryParameters['name'] ?? '')),
         GoRoute(path: '/profiles', builder: (_, _) => const ProfilePickerScreen()),
         StatefulShellRoute.indexedStack(
           builder: (_, _, shell) => _ChildShell(shell: shell),
@@ -50,25 +50,62 @@ class _ChildShell extends StatelessWidget {
 
   final StatefulNavigationShell shell;
 
+  static const _items = [
+    (Icons.home_rounded, 'Beranda'),
+    (Icons.record_voice_over_rounded, 'Latihan'),
+    (Icons.menu_book_rounded, 'Cerita'),
+    (Icons.workspace_premium_rounded, 'Koleksi'),
+  ];
+
   @override
   Widget build(BuildContext context) => Scaffold(
         body: shell,
-        bottomNavigationBar: NavigationBarTheme(
-          data: NavigationBarThemeData(
-            backgroundColor: AppColors.surface,
-            indicatorColor: AppColors.lantern,
-            labelTextStyle: WidgetStatePropertyAll(AppText.caption.copyWith(color: AppColors.ink)),
-          ),
-          child: NavigationBar(
-            selectedIndex: shell.currentIndex,
-            labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-            onDestinationSelected: (i) => shell.goBranch(i, initialLocation: i == shell.currentIndex),
-            destinations: const [
-              NavigationDestination(icon: Icon(Icons.home_rounded), label: 'Beranda'),
-              NavigationDestination(icon: Icon(Icons.record_voice_over_rounded), label: 'Latihan'),
-              NavigationDestination(icon: Icon(Icons.menu_book_rounded), label: 'Cerita'),
-              NavigationDestination(icon: Icon(Icons.emoji_objects_rounded), label: 'Koleksi'),
-            ],
+        bottomNavigationBar: ColoredBox(
+          color: AppColors.surface,
+          child: SafeArea(
+            top: false,
+            child: Row(
+              children: [
+                for (var i = 0; i < _items.length; i++)
+                  Expanded(
+                    child: Semantics(
+                      button: true,
+                      selected: i == shell.currentIndex,
+                      label: _items[i].$2,
+                      excludeSemantics: true,
+                      child: InkWell(
+                        onTap: () => shell.goBranch(i, initialLocation: i == shell.currentIndex),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(_items[i].$1, size: 28, color: i == shell.currentIndex ? AppColors.ink : AppColors.subInk),
+                              const SizedBox(height: 2),
+                              Text(
+                                _items[i].$2,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: AppText.caption.copyWith(
+                                  color: i == shell.currentIndex ? AppColors.ink : AppColors.subInk,
+                                  fontWeight: i == shell.currentIndex ? FontWeight.w700 : FontWeight.w500,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              AnimatedContainer(
+                                duration: const Duration(milliseconds: 180),
+                                width: i == shell.currentIndex ? 20 : 0,
+                                height: 4,
+                                decoration: BoxDecoration(color: AppColors.lantern, borderRadius: BorderRadius.circular(2)),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       );

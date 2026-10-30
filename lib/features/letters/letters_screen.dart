@@ -128,12 +128,10 @@ class _LettersScreenState extends ConsumerState<LettersScreen> {
             children: [
               Text('Sentuh semua huruf', style: AppText.title),
               const SizedBox(height: 16),
-              LanternFrame(
-                height: 200,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 56),
-                  child: Center(child: LetterMarkedText(q.target, style: AppText.wordHero.copyWith(fontSize: 96), markLetters: colors)),
-                ),
+              WordField(
+                height: 190,
+                color: AppColors.sky,
+                child: Center(child: Text(q.target, style: AppText.wordHero.copyWith(fontSize: 104))),
               ),
               const SizedBox(height: 20),
               Row(

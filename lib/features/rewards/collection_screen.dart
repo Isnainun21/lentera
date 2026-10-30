@@ -28,7 +28,7 @@ class CollectionScreen extends ConsumerWidget {
       child: ListView(
         padding: const EdgeInsets.all(AppSpace.gutter),
         children: [
-          Text('Koleksi lentera', style: AppText.title),
+          Text('Koleksi', style: AppText.title),
           const SizedBox(height: 16),
           CardBox(
             color: AppColors.lantern,
@@ -36,24 +36,32 @@ class CollectionScreen extends ConsumerWidget {
               children: [
                 Text('$sessions', style: AppText.wordHero),
                 const SizedBox(width: 16),
-                Expanded(child: Text(sessions == 0 ? 'Selesaikan latihan untuk menyalakan lentera pertama.' : 'lentera sudah kamu nyalakan.', style: AppText.body)),
+                Expanded(child: Text(sessions == 0 ? 'Selesaikan latihan pertamamu.' : 'latihan sudah kamu selesaikan.', style: AppText.body)),
               ],
             ),
           ),
           const SizedBox(height: 16),
           Text('Perjalanan membaca', style: AppText.heading),
           const SizedBox(height: 10),
-          for (final (kind, source, title, detail) in _goals) ...[
-            _GoalRow(title: title, detail: detail, reached: has(kind, source)),
-            const SizedBox(height: 8),
-          ],
+          CardBox(
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+            child: Column(
+              children: [
+                for (final (kind, source, title, detail) in _goals) _GoalRow(title: title, detail: detail, reached: has(kind, source)),
+              ],
+            ),
+          ),
           const SizedBox(height: 8),
           Text('Cerita', style: AppText.heading),
           const SizedBox(height: 10),
-          for (final story in stories) ...[
-            _GoalRow(title: story.title, detail: 'Baca sampai selesai', reached: has('story', story.id)),
-            const SizedBox(height: 8),
-          ],
+          CardBox(
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+            child: Column(
+              children: [
+                for (final story in stories) _GoalRow(title: story.title, detail: 'Baca sampai selesai', reached: has('story', story.id)),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -71,15 +79,11 @@ class _GoalRow extends StatelessWidget {
   Widget build(BuildContext context) => Semantics(
         label: '$title, ${reached ? 'tercapai' : 'belum tercapai'}. $detail',
         excludeSemantics: true,
-        child: CardBox(
-          padding: const EdgeInsets.all(14),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
           child: Row(
             children: [
-              SizedBox(
-                width: 36,
-                height: 48,
-                child: LanternFrame(color: AppColors.idle, light: reached ? 1 : 0, height: 48, child: const SizedBox.shrink()),
-              ),
+              DayRing(done: reached, size: 44),
               const SizedBox(width: 14),
               Expanded(
                 child: Column(

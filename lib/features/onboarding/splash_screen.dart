@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/providers.dart';
-import '../../core/design/components.dart';
 import '../../core/design/tokens.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -14,12 +13,9 @@ class SplashScreen extends ConsumerStatefulWidget {
 }
 
 class _SplashScreenState extends ConsumerState<SplashScreen> {
-  double _light = 0;
-
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() => _light = 1));
     _route();
   }
 
@@ -41,18 +37,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        backgroundColor: AppColors.ink,
+        backgroundColor: AppColors.deep,
         body: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(
-                width: 96,
-                height: 128,
-                child: LanternFrame(color: AppColors.subInk, light: _light, height: 128, child: const SizedBox.shrink()),
-              ),
-              const SizedBox(height: 24),
-              Text('Lentera', style: AppText.title.copyWith(color: Colors.white)),
+              Text('Lentera', style: AppText.wordHero.copyWith(color: Colors.white, fontSize: 52)),
+              const SizedBox(height: 10),
+              Text('Belajar membaca, pelan-pelan', style: AppText.body.copyWith(color: const Color(0xFFE6EEF0))),
             ],
           ),
         ),

@@ -82,6 +82,27 @@ class Repository {
     return id;
   }
 
+  /// Masuk dengan nama panggilan, tanpa membedakan huruf besar. Null berarti nama belum terdaftar.
+  Future<String?> signInByName(String name) async {
+    final wanted = name.trim().toLowerCase();
+    final rows = await (db.select(db.children)..where((t) => t.deletedAt.isNull())).get();
+    for (final r in rows) {
+      if (r.nickname.trim().toLowerCase() == wanted) {
+        await writeKey('activeChild', r.id);
+        return r.id;
+      }
+    }
+    return null;
+  }
+
+  Future<void> signOutChild() => (db.delete(db.keyValues)..where((t) => t.key.equals('activeChild'))).go();
+
+  Future<bool> nameTaken(String name) async {
+    final wanted = name.trim().toLowerCase();
+    final rows = await (db.select(db.children)..where((t) => t.deletedAt.isNull())).get();
+    return rows.any((r) => r.nickname.trim().toLowerCase() == wanted);
+  }
+
   Future<void> _grantConsent(String childId, DateTime now) async {
     final id = _uuid.v4();
     await db.into(db.consents).insert(

@@ -130,13 +130,36 @@ void main() {
       await tapText(tester, i == 6 ? 'Selesai' : 'Kata berikutnya');
     }
     await settle(tester, 600);
-    expect(find.text('Lentera hari ini menyala'), findsOneWidget);
+    expect(find.text('Sesi selesai'), findsOneWidget);
 
     final attempts = await tester.runAsync(() => db.select(db.attempts).get());
     expect(attempts!.where((a) => a.finished).length, 6);
     final sessions = await tester.runAsync(() => db.select(db.practiceSessions).get());
     expect(sessions!.single.endedAt, isNotNull);
     expect(sessions.single.endLevel, greaterThan(1));
+    await finish(tester, db);
+  });
+
+  testWidgets('keluar, nama salah ditolak, lalu masuk lagi dengan nama', (tester) async {
+    final db = await pumpApp(tester, FakeRecognizer(SpeechAvailability.ready));
+    await completeSetup(tester);
+    await tester.tap(find.bySemanticsLabel('Akun Bima'));
+    await settle(tester);
+    await tapText(tester, 'Keluar');
+    await settle(tester, 500);
+    expect(find.text('Siapa namamu?'), findsOneWidget);
+    expect(find.text('Halo, Bima'), findsNothing);
+
+    await tester.enterText(find.byType(TextField), 'Rani');
+    await tester.pump();
+    await tapText(tester, 'Masuk');
+    expect(find.text('Nama ini belum terdaftar. Minta pendamping membuatkan profil.'), findsOneWidget);
+
+    await tester.enterText(find.byType(TextField), 'bima');
+    await tester.pump();
+    await tapText(tester, 'Masuk');
+    await settle(tester, 500);
+    expect(find.text('Halo, Bima'), findsOneWidget);
     await finish(tester, db);
   });
 

@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../app/providers.dart';
 import '../../core/design/components.dart';
+import '../../core/design/scenes.dart';
 import '../../core/design/tokens.dart';
 import '../../core/speech/speech_ports.dart';
 import '../../domain/child.dart';
@@ -188,18 +189,17 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
           padding: const EdgeInsets.all(AppSpace.gutter),
           child: Column(
             children: [
-              Wrap(
-                alignment: WrapAlignment.spaceBetween,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                runSpacing: 4,
+              Row(
                 children: [
-                  _BackPill(onPressed: () => context.pop()),
-                  Semantics(
-                    label: 'Kata ${s.position} dari ${s.total}',
-                    excludeSemantics: true,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 12),
-                      child: Text('${s.position} dari ${s.total}', style: AppText.bodyStrong),
+                  RoundButton(icon: Icons.arrow_back_rounded, label: 'Kembali', onPressed: () => context.pop()),
+                  const SizedBox(width: 12),
+                  Expanded(child: _Progress(value: s.position / s.total)),
+                  const SizedBox(width: 12),
+                  Flexible(
+                    child: Semantics(
+                      label: 'Kata ${s.position} dari ${s.total}',
+                      excludeSemantics: true,
+                      child: Text('${s.position} dari ${s.total}', style: AppText.bodyStrong, textAlign: TextAlign.end),
                     ),
                   ),
                 ],
@@ -211,7 +211,7 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
                     children: [
                       _WordLantern(state: s, onTap: () => _speak(s.word.text), letterColors: _child.settings.letterColors),
                       const SizedBox(height: 16),
-                      Wrap(
+                      if (s.word.syllables.length > 1) Wrap(
                         alignment: WrapAlignment.center,
                         spacing: 10,
                         runSpacing: 10,
@@ -252,22 +252,16 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
   }
 }
 
-class _BackPill extends StatelessWidget {
-  const _BackPill({required this.onPressed});
+class _Progress extends StatelessWidget {
+  const _Progress({required this.value});
 
-  final VoidCallback onPressed;
+  final double value;
 
   @override
-  Widget build(BuildContext context) => TextButton.icon(
-        onPressed: onPressed,
-        icon: const Icon(Icons.arrow_back_rounded),
-        label: const Text('Kembali'),
-        style: TextButton.styleFrom(
-          backgroundColor: AppColors.surface,
-          foregroundColor: AppColors.ink,
-          minimumSize: const Size(0, AppSpace.tapGuardian),
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          textStyle: AppText.bodyGuardian,
+  Widget build(BuildContext context) => ExcludeSemantics(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(6),
+          child: LinearProgressIndicator(value: value, minHeight: 10, color: AppColors.ink, backgroundColor: AppColors.idle),
         ),
       );
 }
@@ -288,17 +282,22 @@ class _WordLantern extends StatelessWidget {
       excludeSemantics: true,
       child: GestureDetector(
         onTap: onTap,
-        child: LanternFrame(
-          light: done ? 1 : 0,
-          height: 240,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(24, 64, 24, 24),
-            child: Center(
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: LetterMarkedText(state.word.text, style: AppText.wordHero, markLetters: letterColors && !done),
+        child: WordField(
+          color: done ? AppColors.leaf : AppColors.lantern,
+          child: Stack(
+            children: [
+              const Positioned(top: 16, right: 16, child: Icon(Icons.volume_up_rounded, size: 30, color: AppColors.ink)),
+              if (done) const Positioned(top: 16, left: 16, child: Icon(Icons.check_circle_rounded, size: 30, color: AppColors.ink)),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: LetterMarkedText(state.word.text, style: AppText.wordHero, markLetters: letterColors && !done),
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
         ),
       ),
@@ -550,13 +549,12 @@ class _SessionSummary extends StatelessWidget {
             child: Column(
               children: [
                 const Spacer(),
-                const SizedBox(
-                  width: 160,
-                  height: 210,
-                  child: LanternFrame(color: AppColors.surface, light: 1, height: 210, child: SizedBox.shrink()),
+                const ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(AppSpace.cardRadius)),
+                  child: SizedBox(height: 280, width: double.infinity, child: SceneArt(scene: Scene.hills)),
                 ),
-                const SizedBox(height: 24),
-                Text('Lentera hari ini menyala', style: AppText.title, textAlign: TextAlign.center),
+                const SizedBox(height: 28),
+                Text('Sesi selesai', style: AppText.title, textAlign: TextAlign.center),
                 const SizedBox(height: 8),
                 Text('Kamu sudah berlatih $words kata.', style: AppText.body, textAlign: TextAlign.center),
                 const Spacer(),

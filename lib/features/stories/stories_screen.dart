@@ -5,27 +5,49 @@ import 'package:go_router/go_router.dart';
 import '../../app/providers.dart';
 import '../../content/content.dart';
 import '../../core/design/components.dart';
+import '../../core/design/scenes.dart';
 import '../../core/design/tokens.dart';
 import '../../core/speech/speech_ports.dart';
 
-class StoriesScreen extends ConsumerWidget {
+class StoriesScreen extends ConsumerStatefulWidget {
   const StoriesScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final stories = ref.watch(contentProvider).stories;
+  ConsumerState<StoriesScreen> createState() => _StoriesScreenState();
+}
+
+class _StoriesScreenState extends ConsumerState<StoriesScreen> {
+  int? _level;
+
+  @override
+  Widget build(BuildContext context) {
+    final all = ref.watch(contentProvider).stories;
     final progress = ref.watch(storyProgressProvider).value ?? const [];
+    final levels = all.map((s) => s.level).toSet().toList()..sort();
+    final stories = _level == null ? all : all.where((s) => s.level == _level).toList();
     return SafeArea(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.all(AppSpace.gutter),
+            padding: const EdgeInsets.fromLTRB(AppSpace.gutter, AppSpace.gutter, AppSpace.gutter, 14),
             child: Text('Mau baca apa?', style: AppText.title),
           ),
+          SizedBox(
+            height: AppSpace.tapGuardian,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: AppSpace.gutter),
+              children: [
+                _LevelChip(label: 'Semua', selected: _level == null, onTap: () => setState(() => _level = null)),
+                for (final l in levels) _LevelChip(label: 'Level $l', selected: _level == l, onTap: () => setState(() => _level = l)),
+              ],
+            ),
+          ),
+          const SizedBox(height: 14),
           Expanded(
             child: PageView.builder(
-              controller: PageController(viewportFraction: 0.84),
+              controller: PageController(viewportFraction: 0.86),
               padEnds: false,
               itemCount: stories.length,
               itemBuilder: (_, i) {
@@ -44,6 +66,37 @@ class StoriesScreen extends ConsumerWidget {
   }
 }
 
+class _LevelChip extends StatelessWidget {
+  const _LevelChip({required this.label, required this.selected, required this.onTap});
+
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.only(right: 8),
+        child: Semantics(
+          button: true,
+          selected: selected,
+          child: Material(
+            color: selected ? AppColors.ink : AppColors.surface,
+            borderRadius: BorderRadius.circular(16),
+            child: InkWell(
+              onTap: onTap,
+              borderRadius: BorderRadius.circular(16),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18),
+                child: Center(
+                  child: Text(label, style: AppText.bodyGuardian.copyWith(color: selected ? Colors.white : AppColors.ink, fontWeight: FontWeight.w600)),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+}
+
 class _StoryCover extends StatelessWidget {
   const _StoryCover({required this.story, required this.completed, required this.page});
 
@@ -58,35 +111,36 @@ class _StoryCover extends StatelessWidget {
       button: true,
       label: '${story.title}, $status',
       excludeSemantics: true,
-      child: Material(
-        color: AppColors.named(story.color),
-        shape: const LanternShape(bottomRadius: AppSpace.cardRadius),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: () => context.push('/story/${story.id}'),
-          child: Column(
+      child: GestureDetector(
+        onTap: () => context.push('/story/${story.id}'),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(AppSpace.cardRadius),
+          child: Stack(
+            fit: StackFit.expand,
             children: [
-              const Expanded(child: Center(child: Icon(Icons.menu_book_rounded, size: 72, color: AppColors.ink))),
-              Container(
-                width: double.infinity,
-                margin: const EdgeInsets.all(12),
-                padding: const EdgeInsets.all(18),
-                decoration: BoxDecoration(color: AppColors.surface, borderRadius: BorderRadius.circular(AppSpace.tileRadius)),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(story.title, style: AppText.heading),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        if (completed) ...[
-                          const Icon(Icons.check_circle_rounded, size: 18, color: AppColors.ok),
-                          const SizedBox(width: 4),
+              SceneArt(scene: sceneForStory(story.id)),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.all(14),
+                  padding: const EdgeInsets.all(18),
+                  decoration: BoxDecoration(color: AppColors.ink, borderRadius: BorderRadius.circular(AppSpace.tileRadius)),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(story.title, style: AppText.heading.copyWith(color: Colors.white)),
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          Icon(completed ? Icons.check_circle_rounded : Icons.menu_book_rounded, size: 18, color: AppColors.lantern),
+                          const SizedBox(width: 6),
+                          Expanded(child: Text(status, style: AppText.bodyGuardian.copyWith(color: const Color(0xFFE6EEF0)))),
                         ],
-                        Expanded(child: Text(status, style: AppText.bodyGuardian)),
-                      ],
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -143,7 +197,7 @@ class _StoryReaderScreenState extends ConsumerState<StoryReaderScreen> {
     final child = ref.read(activeChildProvider)!;
     final repo = ref.read(repositoryProvider);
     final next = _page + delta;
-    ref.read(speakerProvider).stop();
+    _speaker.stop();
     if (next >= _story.pages.length) {
       await repo.saveStoryPage(child.id, _story.id, _page, completed: true);
       if (mounted) setState(() => _done = true);
@@ -161,7 +215,7 @@ class _StoryReaderScreenState extends ConsumerState<StoryReaderScreen> {
 
   void _readAloud() {
     final rate = ref.read(activeChildProvider)?.settings.speechRate ?? 0.4;
-    ref.read(speakerProvider).speak(_story.pages[_page].text, rate: rate);
+    _speaker.speak(_story.pages[_page].text, rate: rate);
   }
 
   @override
@@ -179,8 +233,11 @@ class _StoryReaderScreenState extends ConsumerState<StoryReaderScreen> {
             child: Column(
               children: [
                 const Spacer(),
-                const SizedBox(width: 140, height: 180, child: LanternFrame(light: 1, height: 180, child: SizedBox.shrink())),
-                const SizedBox(height: 24),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(AppSpace.cardRadius),
+                  child: SizedBox(height: 280, width: double.infinity, child: SceneArt(scene: sceneForStory(story.id))),
+                ),
+                const SizedBox(height: 28),
                 Text('Ceritanya selesai', style: AppText.title, textAlign: TextAlign.center),
                 const SizedBox(height: 8),
                 Text('"${story.title}" masuk ke Koleksi.', style: AppText.body, textAlign: TextAlign.center),
@@ -195,59 +252,77 @@ class _StoryReaderScreenState extends ConsumerState<StoryReaderScreen> {
     final page = story.pages[_page];
     final last = _page + 1 >= story.pages.length;
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Halaman ${_page + 1} dari ${story.pages.length}'),
-        actions: [
-          IconButton(
-            tooltip: 'Bacakan halaman',
-            onPressed: _readAloud,
-            icon: const Icon(Icons.volume_up_rounded),
-            style: IconButton.styleFrom(backgroundColor: AppColors.surface, minimumSize: const Size(48, 48)),
-          ),
-          const SizedBox(width: 12),
-        ],
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpace.gutter),
-          child: Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  child: CardBox(
-                    padding: const EdgeInsets.all(24),
-                    child: _ReadingText(
-                      text: _syllables ? page.syllables : page.text,
-                      ruler: child.settings.ruler,
-                      activeLine: _line,
-                      onLine: (i) => setState(() => _line = i),
+      body: Column(
+        children: [
+          SizedBox(
+            height: 230,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                SceneArt(scene: sceneForStory(story.id)),
+                SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          RoundButton(icon: Icons.arrow_back_rounded, label: 'Kembali', onPressed: () => context.pop()),
+                          RoundButton(icon: Icons.volume_up_rounded, label: 'Bacakan halaman', onPressed: _readAloud, color: AppColors.ink, foreground: Colors.white),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 12),
-              SwitchListTile(
-                value: _syllables,
-                onChanged: (v) => setState(() {
-                  _syllables = v;
-                  _line = 0;
-                }),
-                title: Text('Pisah suku kata', style: AppText.bodyStrong),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  if (_page > 0) ...[
-                    Expanded(child: QuietAction(label: 'Sebelumnya', onPressed: () => _go(-1))),
-                    const SizedBox(width: 10),
-                  ],
-                  Expanded(flex: 2, child: PrimaryAction(label: last ? 'Selesai' : 'Halaman berikutnya', onPressed: () => _go(1))),
-                ],
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
+          Expanded(
+            child: SafeArea(
+              top: false,
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpace.gutter),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(story.title, style: AppText.heading),
+                    Text('Halaman ${_page + 1} dari ${story.pages.length}', style: AppText.caption),
+                    const SizedBox(height: 12),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: _ReadingText(
+                          text: _syllables ? page.syllables : page.text,
+                          ruler: child.settings.ruler,
+                          activeLine: _line,
+                          onLine: (i) => setState(() => _line = i),
+                        ),
+                      ),
+                    ),
+                    SwitchListTile(
+                      value: _syllables,
+                      onChanged: (v) => setState(() {
+                        _syllables = v;
+                        _line = 0;
+                      }),
+                      title: Text('Pisah suku kata', style: AppText.bodyGuardian),
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                    Row(
+                      children: [
+                        if (_page > 0) ...[
+                          RoundButton(icon: Icons.arrow_back_rounded, label: 'Halaman sebelumnya', onPressed: () => _go(-1)),
+                          const SizedBox(width: 10),
+                        ],
+                        Expanded(child: PrimaryAction(label: last ? 'Selesai' : 'Halaman berikutnya', onPressed: () => _go(1))),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

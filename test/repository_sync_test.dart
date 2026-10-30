@@ -113,6 +113,17 @@ void main() {
     expect(last.payload, contains('deleted_at'));
   });
 
+  test('masuk dan keluar dengan nama', () async {
+    final r = newRepo();
+    final c = await r.createChild(nickname: 'Bima', avatarId: 0, startLevel: 1);
+    await r.signOutChild();
+    expect(await r.readKey('activeChild'), isNull);
+    expect(await r.signInByName('Rani'), isNull);
+    expect(await r.signInByName(' BIMA '), c);
+    expect(await r.readKey('activeChild'), c);
+    expect(await r.nameTaken('bima'), isTrue);
+  });
+
   group('SyncEngine', () {
     test('luring lalu daring: outbox terkirim sekali, tanpa duplikat', () async {
       final r = newRepo();

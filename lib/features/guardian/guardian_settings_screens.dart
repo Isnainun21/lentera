@@ -386,7 +386,10 @@ class DataScreen extends ConsumerWidget {
           const SizedBox(height: 8),
           QuietAction(label: 'Tambah profil anak', icon: Icons.person_add_alt_rounded, onPressed: () => context.push('/setup?add=1')),
           const SizedBox(height: 8),
-          QuietAction(label: 'Ganti profil aktif', icon: Icons.swap_horiz_rounded, onPressed: () => context.go('/profiles')),
+          QuietAction(label: 'Keluarkan anak dari akun', icon: Icons.logout_rounded, onPressed: () async {
+            await ref.read(repositoryProvider).signOutChild();
+            if (context.mounted) context.go('/profiles');
+          }),
           const SizedBox(height: 8),
           QuietAction(label: 'Uji pengenalan ucapan', icon: Icons.science_outlined, onPressed: () => context.push('/guardian/speech-test')),
           const SizedBox(height: 24),

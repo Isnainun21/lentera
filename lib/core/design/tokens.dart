@@ -4,21 +4,22 @@ import 'package:flutter/material.dart';
 class AppColors {
   const AppColors._();
 
-  static const ground = Color(0xFFDDE6E3);
+  static const ground = Color(0xFFF3F5F0);
   static const surface = Color(0xFFFFFFFF);
-  static const ink = Color(0xFF1B2422);
-  static const subInk = Color(0xFF46524F);
-  static const lantern = Color(0xFFEFC75E);
-  static const lanternSoft = Color(0xFFFBF0CE);
-  static const sky = Color(0xFF8FB6C9);
-  static const leaf = Color(0xFF7DB58F);
-  static const ok = Color(0xFF1E6B46);
-  static const okSoft = Color(0xFFDCEFE3);
+  static const ink = Color(0xFF121A18);
+  static const subInk = Color(0xFF4A5654);
+  static const deep = Color(0xFF0E4C63);
+  static const lantern = Color(0xFFFFC22E);
+  static const lanternSoft = Color(0xFFFFE9A8);
+  static const sky = Color(0xFF49A9EE);
+  static const leaf = Color(0xFF35B779);
+  static const ok = Color(0xFF0F6B45);
+  static const okSoft = Color(0xFFD5F2E2);
   static const retry = Color(0xFF7A5600);
-  static const retrySoft = Color(0xFFF7EBCB);
+  static const retrySoft = Color(0xFFFFEFC2);
   static const letterB = Color(0xFF1D5C8C);
   static const letterD = Color(0xFF9A4A00);
-  static const idle = Color(0xFFEDF2F0);
+  static const idle = Color(0xFFE7EBE5);
 
   static Color named(String name) => switch (name) {
         'sky' => sky,
@@ -27,7 +28,7 @@ class AppColors {
       };
 
   /// Avatar sementara: lingkaran warna dan inisial, sampai aset avatar ditentukan.
-  static const avatars = [sky, leaf, lantern, Color(0xFFC9B7A6), Color(0xFFA9C4BE), Color(0xFFD6C27F)];
+  static const avatars = [sky, leaf, lantern, Color(0xFFFF9F68), Color(0xFF7FD6C2), Color(0xFFB7A6F0)];
 }
 
 class AppText {
@@ -45,16 +46,16 @@ class AppText {
         fontVariations: [FontVariation('wght', weight.toDouble())],
       );
 
-  static final wordHero = _style(60, 700, 1.1, 2.4);
+  static final wordHero = _style(72, 700, 1.05, 1.5);
   static final syllable = _style(34, 700, 1.15, 1.4);
-  static final title = _style(28, 700, 1.25);
+  static final title = _style(30, 700, 1.2, -0.3);
   static final heading = _style(22, 600, 1.3);
-  static final reading = _style(22, 500, 1.7, 0.88);
+  static final reading = _style(26, 500, 1.6, 0.8);
   static final body = _style(18, 400, 1.45);
   static final bodyStrong = _style(18, 600, 1.45);
   static final bodyGuardian = _style(16, 400, 1.45);
   static final caption = _style(14, 500, 1.4, 0, AppColors.subInk);
-  static final metric = _style(30, 700, 1.15);
+  static final metric = _style(32, 700, 1.1, -0.3);
 }
 
 class AppSpace {

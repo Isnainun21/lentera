@@ -181,12 +181,23 @@ class GuardianSummaryScreen extends ConsumerWidget {
           return ListView(
             padding: const EdgeInsets.all(AppSpace.gutter),
             children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(child: _Pillar(color: AppColors.sky, icon: Icons.abc_rounded, label: 'Level', value: '${child.level}')),
+                  const SizedBox(width: 10),
+                  Expanded(child: _Pillar(color: AppColors.leaf, icon: Icons.schedule_rounded, label: 'Menit', value: '${s.minutesThisWeek}')),
+                  const SizedBox(width: 10),
+                  Expanded(child: _Pillar(color: AppColors.lantern, icon: Icons.check_rounded, label: 'Ketepatan', value: s.accuracy == null ? '-' : percent(s.accuracy))),
+                ],
+              ),
+              const SizedBox(height: 12),
               CardBox(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('${s.wordsThisWeek} kata', style: AppText.metric),
-                    Text('selesai minggu ini, level ${child.level}', style: AppText.bodyGuardian),
+                    Text('selesai minggu ini', style: AppText.bodyGuardian),
                     const SizedBox(height: 16),
                     TrendBars(bars: s.dayBars),
                     const SizedBox(height: 10),
@@ -199,12 +210,10 @@ class GuardianSummaryScreen extends ConsumerWidget {
                 child: Wrap(
                   runSpacing: 16,
                   children: [
-                    _Metric(label: 'Ketepatan minggu ini', value: percent(s.accuracy)),
                     _Metric(
                       label: 'Dibanding minggu lalu',
                       value: s.trend == null ? 'Belum cukup data' : '${s.trend! >= 0 ? '+' : ''}${(s.trend! * 100).round()} poin',
                     ),
-                    _Metric(label: 'Waktu latihan', value: '${s.minutesThisWeek} menit'),
                     _Metric(label: 'Huruf b', value: percent(s.letterAccuracy['b'])),
                     _Metric(label: 'Huruf d', value: percent(s.letterAccuracy['d'])),
                   ],
@@ -246,6 +255,39 @@ class GuardianSummaryScreen extends ConsumerWidget {
       ),
     );
   }
+}
+
+class _Pillar extends StatelessWidget {
+  const _Pillar({required this.color, required this.icon, required this.label, required this.value});
+
+  final Color color;
+  final IconData icon;
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+        label: '$label $value',
+        excludeSemantics: true,
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(8, 12, 8, 18),
+          decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(40)),
+          child: Column(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: const BoxDecoration(color: AppColors.ink, shape: BoxShape.circle),
+                child: Icon(icon, color: Colors.white, size: 24),
+              ),
+              const SizedBox(height: 12),
+              FittedBox(fit: BoxFit.scaleDown, child: Text(label, style: AppText.caption.copyWith(color: AppColors.ink))),
+              const SizedBox(height: 6),
+              FittedBox(fit: BoxFit.scaleDown, child: Text(value, style: AppText.metric.copyWith(fontSize: 26))),
+            ],
+          ),
+        ),
+      );
 }
 
 class _Metric extends StatelessWidget {
@@ -312,7 +354,7 @@ class _Legend extends StatelessWidget {
   Widget build(BuildContext context) => Wrap(
         spacing: 14,
         runSpacing: 4,
-        children: [_key(AppColors.ok, 'Benar sendiri'), _key(AppColors.lantern, 'Dibantu atau belum tepat')],
+        children: [_key(AppColors.ok, 'Benar sendiri'), _key(AppColors.lantern, 'Dibantu')],
       );
 }
 

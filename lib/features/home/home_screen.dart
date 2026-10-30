@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../app/providers.dart';
 import '../../core/design/components.dart';
+import '../../core/design/scenes.dart';
 import '../../core/design/tokens.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -12,10 +13,10 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final child = ref.watch(activeChildProvider);
-    if (child == null) return const Center(child: CircularProgressIndicator());
+    if (child == null) return const Center(child: CircularProgressIndicator(color: AppColors.ink));
     final resume = ref.watch(hasOpenSessionProvider).value ?? false;
     final week = ref.watch(weekLanternsProvider);
-    final practicedToday = week[DateTime.now().weekday - 1];
+    final days = week.where((d) => d).length;
 
     return SafeArea(
       child: ListView(
@@ -23,83 +24,60 @@ class HomeScreen extends ConsumerWidget {
         children: [
           Row(
             children: [
-              Semantics(
-                button: true,
-                label: 'Ganti profil',
-                excludeSemantics: true,
-                child: GestureDetector(
-                  onTap: () => context.go('/profiles'),
-                  child: AvatarCircle(avatarId: child.avatarId, name: child.nickname, size: 56),
-                ),
-              ),
-              const SizedBox(width: 12),
               Expanded(child: Text('Halo, ${child.nickname}', style: AppText.title, overflow: TextOverflow.ellipsis)),
               HoldToOpen(
                 label: 'Area pendamping, tahan untuk membuka',
                 onOpen: () => context.push('/guardian-pin'),
                 child: const Icon(Icons.lock_outline_rounded, size: 22, color: AppColors.subInk),
               ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          LanternFrame(
-            color: AppColors.lanternSoft,
-            light: practicedToday ? 1 : 0.18,
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(minHeight: 260),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(28, 72, 28, 24),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(resume ? 'Bacaanmu masih menunggu' : 'Yuk nyalakan lentera hari ini', style: AppText.title),
-                    const SizedBox(height: 6),
-                    Text(resume ? 'Lanjutkan dari kata terakhir.' : 'Baca beberapa kata bersama Lentera.', style: AppText.body),
-                  ],
+              const SizedBox(width: 4),
+              Semantics(
+                button: true,
+                label: 'Akun ${child.nickname}',
+                excludeSemantics: true,
+                child: GestureDetector(
+                  onTap: () => _showAccount(context, ref, child.nickname),
+                  child: AvatarCircle(avatarId: child.avatarId, name: child.nickname, size: 52),
                 ),
               ),
-            ),
+            ],
           ),
-          const SizedBox(height: 16),
-          PrimaryAction(
-            label: resume ? 'Lanjut Baca' : 'Mulai Baca',
-            icon: Icons.play_arrow_rounded,
-            onPressed: () => context.push('/session'),
-          ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 18),
+          _ReadCard(resume: resume),
+          const SizedBox(height: 14),
           CardBox(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Lentera minggu ini', style: AppText.bodyStrong),
+                Text(days == 0 ? 'Minggu ini' : 'Minggu ini, $days hari berlatih', style: AppText.bodyStrong),
                 const SizedBox(height: 14),
                 WeekLanterns(lit: week),
               ],
             ),
           ),
-          const SizedBox(height: 12),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: ActivityPillar(
-                  label: 'Cerita',
-                  icon: Icons.menu_book_rounded,
-                  color: AppColors.leaf,
-                  onTap: () => context.go('/stories'),
+          const SizedBox(height: 14),
+          CardBox(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Mau main apa?', style: AppText.bodyStrong),
+                const SizedBox(height: 14),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: ActivityCircle(icon: Icons.record_voice_over_rounded, label: 'Baca', color: AppColors.lantern, onTap: () => context.push('/session')),
+                    ),
+                    Expanded(
+                      child: ActivityCircle(icon: Icons.abc_rounded, label: 'Huruf', color: AppColors.sky, onTap: () => context.push('/letters')),
+                    ),
+                    Expanded(
+                      child: ActivityCircle(icon: Icons.menu_book_rounded, label: 'Cerita', color: AppColors.leaf, onTap: () => context.go('/stories')),
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: ActivityPillar(
-                  label: 'Beda Huruf',
-                  icon: Icons.abc_rounded,
-                  color: AppColors.sky,
-                  onTap: () => context.push('/letters'),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
@@ -107,51 +85,80 @@ class HomeScreen extends ConsumerWidget {
   }
 }
 
-/// Kolom lengkung pembuka aktivitas.
-class ActivityPillar extends StatelessWidget {
-  const ActivityPillar({super.key, required this.label, required this.icon, required this.color, required this.onTap, this.height = 180, this.description});
+Future<void> _showAccount(BuildContext context, WidgetRef ref, String name) => showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: AppColors.surface,
+      builder: (sheet) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpace.gutter),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text('Masuk sebagai $name', style: AppText.heading),
+              const SizedBox(height: 16),
+              PrimaryAction(
+                label: 'Keluar',
+                icon: Icons.logout_rounded,
+                onPressed: () async {
+                  Navigator.pop(sheet);
+                  await ref.read(repositoryProvider).signOutChild();
+                  if (context.mounted) context.go('/profiles');
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
 
-  final String label;
-  final IconData icon;
-  final Color color;
-  final VoidCallback onTap;
-  final double height;
-  final String? description;
+class _ReadCard extends StatelessWidget {
+  const _ReadCard({required this.resume});
+
+  final bool resume;
 
   @override
-  Widget build(BuildContext context) => Semantics(
-        button: true,
-        label: label,
-        excludeSemantics: true,
-        child: Material(
-          color: color,
-          shape: const LanternShape(),
-          clipBehavior: Clip.antiAlias,
-          child: InkWell(
-            onTap: onTap,
-            child: Container(
-              constraints: BoxConstraints(minHeight: height),
-              padding: const EdgeInsets.fromLTRB(16, 44, 16, 20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 52,
-                    height: 52,
-                    decoration: const BoxDecoration(color: AppColors.ink, shape: BoxShape.circle),
-                    child: Icon(icon, color: Colors.white, size: 28),
-                  ),
-                  const SizedBox(height: 14),
-                  Text(label, style: AppText.bodyStrong, textAlign: TextAlign.center),
-                  if (description != null) ...[
-                    const SizedBox(height: 4),
-                    Text(description!, style: AppText.bodyGuardian, textAlign: TextAlign.center),
+  Widget build(BuildContext context) => ClipRRect(
+        borderRadius: BorderRadius.circular(AppSpace.cardRadius),
+        child: Stack(
+          children: [
+            const Positioned.fill(child: SceneArt(scene: Scene.hills)),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(14, 200, 14, 14),
+              child: Container(
+                padding: const EdgeInsets.all(18),
+                decoration: BoxDecoration(color: AppColors.ink, borderRadius: BorderRadius.circular(AppSpace.tileRadius)),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      resume ? 'Bacaanmu masih menunggu' : 'Baca beberapa kata hari ini',
+                      style: AppText.heading.copyWith(color: Colors.white),
+                    ),
+                    const SizedBox(height: 14),
+                    FilledButton(
+                      onPressed: () => context.push('/session'),
+                      style: FilledButton.styleFrom(
+                        backgroundColor: AppColors.lantern,
+                        foregroundColor: AppColors.ink,
+                        minimumSize: const Size.fromHeight(AppSpace.tapChild),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        textStyle: AppText.bodyStrong,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.play_arrow_rounded, size: 26),
+                          const SizedBox(width: 6),
+                          Flexible(child: Text(resume ? 'Lanjut Baca' : 'Mulai Baca')),
+                        ],
+                      ),
+                    ),
                   ],
-                ],
+                ),
               ),
             ),
-          ),
+          ],
         ),
       );
 }

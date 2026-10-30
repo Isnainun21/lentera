@@ -4,26 +4,28 @@ import 'package:go_router/go_router.dart';
 
 import '../../app/providers.dart';
 import '../../core/design/components.dart';
+import '../../core/design/scenes.dart';
 import '../../core/design/tokens.dart';
 
 /// Pengaturan awal oleh pendamping: persetujuan, PIN, profil anak, lalu mikrofon.
 class SetupScreen extends ConsumerStatefulWidget {
-  const SetupScreen({super.key, this.addingChild = false});
+  const SetupScreen({super.key, this.addingChild = false, this.name = ''});
 
   final bool addingChild;
+  final String name;
 
   @override
   ConsumerState<SetupScreen> createState() => _SetupScreenState();
 }
 
-enum _Step { consent, pin, profile, mic }
+enum _Step { consent, pin, verifyPin, profile, mic }
 
 class _SetupScreenState extends ConsumerState<SetupScreen> {
   late _Step _step = _Step.consent;
   bool _agreed = false;
   final _pin = TextEditingController();
   final _pinAgain = TextEditingController();
-  final _name = TextEditingController();
+  late final _name = TextEditingController(text: widget.name);
   int _avatar = 0;
   int _level = 1;
   String? _error;
@@ -54,15 +56,30 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
     });
   }
 
+  Future<void> _checkPin() async {
+    if (await ref.read(repositoryProvider).checkPin(_pin.text.trim())) {
+      setState(() {
+        _error = null;
+        _step = _Step.profile;
+      });
+    } else {
+      setState(() => _error = 'PIN belum tepat.');
+    }
+  }
+
   Future<void> _afterConsent() async {
     final hasPin = await ref.read(repositoryProvider).hasPin();
-    setState(() => _step = hasPin ? _Step.profile : _Step.pin);
+    setState(() => _step = hasPin ? _Step.verifyPin : _Step.pin);
   }
 
   Future<void> _saveProfile() async {
     final name = _name.text.trim();
     if (name.isEmpty) {
       setState(() => _error = 'Tulis nama panggilan anak.');
+      return;
+    }
+    if (await ref.read(repositoryProvider).nameTaken(name)) {
+      setState(() => _error = 'Nama ini sudah dipakai. Tambahkan inisial, misalnya Bima R.');
       return;
     }
     setState(() => _busy = true);
@@ -96,6 +113,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
                   children: switch (_step) {
                     _Step.consent => _consent(),
                     _Step.pin => _pinStep(),
+                    _Step.verifyPin => _verifyStep(),
                     _Step.profile => _profile(),
                     _Step.mic => _mic(),
                   },
@@ -106,6 +124,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
                 child: switch (_step) {
                   _Step.consent => PrimaryAction(label: 'Setuju dan lanjut', onPressed: _agreed ? _afterConsent : null),
                   _Step.pin => PrimaryAction(label: 'Simpan PIN', onPressed: _savePin),
+                  _Step.verifyPin => PrimaryAction(label: 'Lanjut', onPressed: _checkPin),
                   _Step.profile => PrimaryAction(label: 'Buat profil', onPressed: _busy ? null : _saveProfile),
                   _Step.mic => PrimaryAction(label: 'Izinkan mikrofon', icon: Icons.mic_rounded, onPressed: _busy ? null : _askMic),
                 },
@@ -164,6 +183,15 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
         _pinField(_pin, 'PIN 4 angka'),
         const SizedBox(height: 12),
         _pinField(_pinAgain, 'Ulangi PIN'),
+        if (_error != null) _errorText(),
+      ];
+
+  List<Widget> _verifyStep() => [
+        Text('PIN pendamping', style: AppText.title),
+        const SizedBox(height: 8),
+        Text('Profil baru dibuat bersama pendamping.', style: AppText.body),
+        const SizedBox(height: 20),
+        _pinField(_pin, 'PIN 4 angka'),
         if (_error != null) _errorText(),
       ];
 
@@ -264,59 +292,102 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
       ];
 }
 
-/// A2: anak memilih profilnya.
-class ProfilePickerScreen extends ConsumerWidget {
+/// Anak masuk dengan namanya. Nama yang sudah ada juga bisa disentuh, karena mengetik sulit bagi sebagian anak.
+class ProfilePickerScreen extends ConsumerStatefulWidget {
   const ProfilePickerScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final children = ref.watch(childrenProvider);
+  ConsumerState<ProfilePickerScreen> createState() => _ProfilePickerScreenState();
+}
+
+class _ProfilePickerScreenState extends ConsumerState<ProfilePickerScreen> {
+  final _name = TextEditingController();
+  bool _unknown = false;
+
+  @override
+  void dispose() {
+    _name.dispose();
+    super.dispose();
+  }
+
+  Future<void> _signIn(String name) async {
+    if (name.trim().isEmpty) return;
+    final id = await ref.read(repositoryProvider).signInByName(name);
+    if (!mounted) return;
+    if (id != null) {
+      context.go('/home');
+    } else {
+      setState(() => _unknown = true);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final children = ref.watch(childrenProvider).value ?? const [];
     return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpace.gutter),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Siapa yang membaca?', style: AppText.title),
-              const SizedBox(height: 20),
-              Expanded(
-                child: children.when(
-                  loading: () => const Center(child: CircularProgressIndicator()),
-                  error: (_, _) => const MessageState(title: 'Profil belum bisa dibuka'),
-                  data: (list) => ListView.separated(
-                    itemCount: list.length,
-                    separatorBuilder: (_, _) => const SizedBox(height: 12),
-                    itemBuilder: (_, i) {
-                      final c = list[i];
-                      return Material(
+      body: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          const SizedBox(height: 240, child: SceneArt(scene: Scene.hills)),
+          Padding(
+            padding: const EdgeInsets.all(AppSpace.gutter),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text('Siapa namamu?', style: AppText.title),
+                const SizedBox(height: 14),
+                TextField(
+                  controller: _name,
+                  textCapitalization: TextCapitalization.words,
+                  textInputAction: TextInputAction.done,
+                  style: AppText.heading,
+                  decoration: const InputDecoration(labelText: 'Nama panggilan'),
+                  onChanged: (_) => setState(() => _unknown = false),
+                  onSubmitted: _signIn,
+                ),
+                const SizedBox(height: 12),
+                PrimaryAction(label: 'Masuk', onPressed: _name.text.trim().isEmpty ? null : () => _signIn(_name.text)),
+                if (_unknown) ...[
+                  const SizedBox(height: 14),
+                  Semantics(liveRegion: true, child: Text('Nama ini belum terdaftar. Minta pendamping membuatkan profil.', style: AppText.bodyStrong)),
+                  const SizedBox(height: 8),
+                  QuietAction(
+                    label: 'Buat profil baru',
+                    icon: Icons.person_add_alt_rounded,
+                    onPressed: () => context.push('/setup?add=1&name=${Uri.encodeQueryComponent(_name.text.trim())}'),
+                  ),
+                ],
+                if (children.isNotEmpty) ...[
+                  const SizedBox(height: 24),
+                  Text('Atau sentuh namamu', style: AppText.bodyStrong),
+                  const SizedBox(height: 10),
+                  for (final c in children)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Material(
                         color: AppColors.surface,
-                        borderRadius: BorderRadius.circular(AppSpace.cardRadius),
+                        borderRadius: BorderRadius.circular(AppSpace.tileRadius),
                         child: InkWell(
-                          borderRadius: BorderRadius.circular(AppSpace.cardRadius),
-                          onTap: () async {
-                            await ref.read(repositoryProvider).writeKey('activeChild', c.id);
-                            if (context.mounted) context.go('/home');
-                          },
+                          borderRadius: BorderRadius.circular(AppSpace.tileRadius),
+                          onTap: () => _signIn(c.nickname),
                           child: Padding(
-                            padding: const EdgeInsets.all(16),
+                            padding: const EdgeInsets.all(10),
                             child: Row(
                               children: [
-                                AvatarCircle(avatarId: c.avatarId, name: c.nickname, size: 64),
-                                const SizedBox(width: 16),
+                                AvatarCircle(avatarId: c.avatarId, name: c.nickname, size: 52),
+                                const SizedBox(width: 14),
                                 Expanded(child: Text(c.nickname, style: AppText.heading)),
                               ],
                             ),
                           ),
                         ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ],
+                      ),
+                    ),
+                ],
+              ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
