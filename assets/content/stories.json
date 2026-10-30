@@ -1,0 +1,65 @@
+{
+ "version": 1,
+ "stories": [
+  {
+   "id": "c1",
+   "title": "Petualangan di Hutan Pinus",
+   "level": 1,
+   "color": "leaf",
+   "pages": [
+    {
+     "text": "Pada suatu hari, Kancil bertemu dengan Kelinci di tepi sungai.",
+     "syllables": "Pa-da su-a-tu ha-ri, Kan-cil ber-te-mu de-ngan Ke-lin-ci di te-pi su-ngai."
+    },
+    {
+     "text": "Mereka bersama-sama mencari buah-buahan segar di sekitar semak.",
+     "syllables": "Me-re-ka ber-sa-ma-sa-ma men-ca-ri bu-ah-bu-ah-an se-gar di se-ki-tar se-mak."
+    },
+    {
+     "text": "Kancil sangat gembira karena menemukan pohon apel manis.",
+     "syllables": "Kan-cil sa-ngat gem-bi-ra ka-re-na me-ne-mu-kan po-hon a-pel ma-nis."
+    }
+   ]
+  },
+  {
+   "id": "c2",
+   "title": "Bima dan Kucing Kecil",
+   "level": 1,
+   "color": "sky",
+   "pages": [
+    {
+     "text": "Bima punya kucing kecil berwarna putih. Namanya Bubu.",
+     "syllables": "Bi-ma pu-nya ku-cing ke-cil ber-war-na pu-tih. Na-ma-nya Bu-bu."
+    },
+    {
+     "text": "Bubu suka bermain bola di halaman rumah.",
+     "syllables": "Bu-bu su-ka ber-ma-in bo-la di ha-la-man ru-mah."
+    },
+    {
+     "text": "Bima dan Bubu adalah sahabat baik.",
+     "syllables": "Bi-ma dan Bu-bu a-da-lah sa-ha-bat ba-ik."
+    }
+   ]
+  },
+  {
+   "id": "c3",
+   "title": "Hari di Kebun Binatang",
+   "level": 2,
+   "color": "lantern",
+   "pages": [
+    {
+     "text": "Dina pergi ke kebun binatang bersama ayah dan ibu.",
+     "syllables": "Di-na per-gi ke ke-bun bi-na-tang ber-sa-ma a-yah dan i-bu."
+    },
+    {
+     "text": "Dia melihat gajah besar dan jerapah tinggi.",
+     "syllables": "Di-a me-li-hat ga-jah be-sar dan je-ra-pah ting-gi."
+    },
+    {
+     "text": "Dina paling suka burung-burung yang bernyanyi merdu.",
+     "syllables": "Di-na pa-ling su-ka bu-rung-bu-rung yang ber-nya-nyi mer-du."
+    }
+   ]
+  }
+ ]
+}

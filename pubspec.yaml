@@ -1,4 +1,4 @@
-﻿name: side
+name: side
 description: "ReadAdapt - aplikasi pembelajaran membaca adaptif untuk anak disleksia."
 publish_to: 'none'
 version: 1.0.0+1
@@ -7,21 +7,31 @@ environment:
   sdk: ^3.13.5
 
 dependencies:
+  crypto: ^3.0.8
+  drift: ^2.35.3
+  drift_flutter: ^0.3.1
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.8
+  flutter_riverpod: ^3.4.3
+  flutter_tts: ^4.2.5
+  go_router: ^18.1.2
+  path_provider: ^2.1.6
+  pdf: ^3.13.1
+  printing: ^5.15.1
   speech_to_text: ^7.0.0
-  shared_preferences: ^2.3.0
-
+  supabase_flutter: ^2.18.3
+  uuid: ^4.6.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  drift_dev: ^2.35.2
+  build_runner: ^2.17.1
 
 flutter:
   uses-material-design: true
   assets:
-    - assets/fonts/
+    - assets/content/
   fonts:
     - family: Lexend
       fonts:

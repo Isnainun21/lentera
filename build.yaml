@@ -1,0 +1,7 @@
+targets:
+  $default:
+    builders:
+      drift_dev:
+        options:
+          # Presisi di bawah satu detik, agar urutan log dalam satu detik tetap benar.
+          store_date_time_values_as_text: true

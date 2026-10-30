@@ -1,0 +1,411 @@
+{
+ "version": 1,
+ "words": [
+  {
+   "id": "l1-1",
+   "text": "BA",
+   "level": 1,
+   "syllables": [
+    "BA"
+   ]
+  },
+  {
+   "id": "l1-2",
+   "text": "BI",
+   "level": 1,
+   "syllables": [
+    "BI"
+   ]
+  },
+  {
+   "id": "l1-3",
+   "text": "BU",
+   "level": 1,
+   "syllables": [
+    "BU"
+   ]
+  },
+  {
+   "id": "l1-4",
+   "text": "MA",
+   "level": 1,
+   "syllables": [
+    "MA"
+   ]
+  },
+  {
+   "id": "l1-5",
+   "text": "NI",
+   "level": 1,
+   "syllables": [
+    "NI"
+   ]
+  },
+  {
+   "id": "l1-6",
+   "text": "RU",
+   "level": 1,
+   "syllables": [
+    "RU"
+   ]
+  },
+  {
+   "id": "l1-7",
+   "text": "DA",
+   "level": 1,
+   "syllables": [
+    "DA"
+   ]
+  },
+  {
+   "id": "l1-8",
+   "text": "DU",
+   "level": 1,
+   "syllables": [
+    "DU"
+   ]
+  },
+  {
+   "id": "l2-1",
+   "text": "BUKU",
+   "level": 2,
+   "syllables": [
+    "BU",
+    "KU"
+   ]
+  },
+  {
+   "id": "l2-2",
+   "text": "BOLA",
+   "level": 2,
+   "syllables": [
+    "BO",
+    "LA"
+   ]
+  },
+  {
+   "id": "l2-3",
+   "text": "MATA",
+   "level": 2,
+   "syllables": [
+    "MA",
+    "TA"
+   ]
+  },
+  {
+   "id": "l2-4",
+   "text": "DADA",
+   "level": 2,
+   "syllables": [
+    "DA",
+    "DA"
+   ]
+  },
+  {
+   "id": "l2-5",
+   "text": "DUKU",
+   "level": 2,
+   "syllables": [
+    "DU",
+    "KU"
+   ]
+  },
+  {
+   "id": "l2-6",
+   "text": "RUSA",
+   "level": 2,
+   "syllables": [
+    "RU",
+    "SA"
+   ]
+  },
+  {
+   "id": "l2-7",
+   "text": "BIBI",
+   "level": 2,
+   "syllables": [
+    "BI",
+    "BI"
+   ]
+  },
+  {
+   "id": "l2-8",
+   "text": "BAJU",
+   "level": 2,
+   "syllables": [
+    "BA",
+    "JU"
+   ]
+  },
+  {
+   "id": "l2-9",
+   "text": "KUPU",
+   "level": 2,
+   "syllables": [
+    "KU",
+    "PU"
+   ]
+  },
+  {
+   "id": "l3-1",
+   "text": "MIMPI",
+   "level": 3,
+   "syllables": [
+    "MIM",
+    "PI"
+   ]
+  },
+  {
+   "id": "l3-2",
+   "text": "LAMPU",
+   "level": 3,
+   "syllables": [
+    "LAM",
+    "PU"
+   ]
+  },
+  {
+   "id": "l3-3",
+   "text": "BADAK",
+   "level": 3,
+   "syllables": [
+    "BA",
+    "DAK"
+   ]
+  },
+  {
+   "id": "l3-4",
+   "text": "PAPAN",
+   "level": 3,
+   "syllables": [
+    "PA",
+    "PAN"
+   ]
+  },
+  {
+   "id": "l3-5",
+   "text": "DOMPET",
+   "level": 3,
+   "syllables": [
+    "DOM",
+    "PET"
+   ]
+  },
+  {
+   "id": "l3-6",
+   "text": "PAGAR",
+   "level": 3,
+   "syllables": [
+    "PA",
+    "GAR"
+   ]
+  },
+  {
+   "id": "l3-7",
+   "text": "BINTANG",
+   "level": 3,
+   "syllables": [
+    "BIN",
+    "TANG"
+   ]
+  },
+  {
+   "id": "l3-8",
+   "text": "POHON",
+   "level": 3,
+   "syllables": [
+    "PO",
+    "HON"
+   ]
+  },
+  {
+   "id": "l3-9",
+   "text": "DANAU",
+   "level": 3,
+   "syllables": [
+    "DA",
+    "NAU"
+   ]
+  },
+  {
+   "id": "l3-10",
+   "text": "KERBAU",
+   "level": 3,
+   "syllables": [
+    "KER",
+    "BAU"
+   ]
+  },
+  {
+   "id": "l4-1",
+   "text": "SEKOLAH",
+   "level": 4,
+   "syllables": [
+    "SE",
+    "KO",
+    "LAH"
+   ]
+  },
+  {
+   "id": "l4-2",
+   "text": "SEMANGGI",
+   "level": 4,
+   "syllables": [
+    "SE",
+    "MANG",
+    "GI"
+   ]
+  },
+  {
+   "id": "l4-3",
+   "text": "SEPATU",
+   "level": 4,
+   "syllables": [
+    "SE",
+    "PA",
+    "TU"
+   ]
+  },
+  {
+   "id": "l4-4",
+   "text": "KELINCI",
+   "level": 4,
+   "syllables": [
+    "KE",
+    "LIN",
+    "CI"
+   ]
+  },
+  {
+   "id": "l4-5",
+   "text": "PELANGI",
+   "level": 4,
+   "syllables": [
+    "PE",
+    "LA",
+    "NGI"
+   ]
+  },
+  {
+   "id": "l4-6",
+   "text": "KOMPUTER",
+   "level": 4,
+   "syllables": [
+    "KOM",
+    "PU",
+    "TER"
+   ]
+  },
+  {
+   "id": "l4-7",
+   "text": "BERSAMA",
+   "level": 4,
+   "syllables": [
+    "BER",
+    "SA",
+    "MA"
+   ]
+  },
+  {
+   "id": "l4-8",
+   "text": "BINATANG",
+   "level": 4,
+   "syllables": [
+    "BI",
+    "NA",
+    "TANG"
+   ]
+  },
+  {
+   "id": "l5-1",
+   "text": "KECERDASAN",
+   "level": 5,
+   "syllables": [
+    "KE",
+    "CER",
+    "DA",
+    "SAN"
+   ]
+  },
+  {
+   "id": "l5-2",
+   "text": "PEMBELAJARAN",
+   "level": 5,
+   "syllables": [
+    "PEM",
+    "BE",
+    "LA",
+    "JA",
+    "RAN"
+   ]
+  },
+  {
+   "id": "l5-3",
+   "text": "PERPUSTAKAAN",
+   "level": 5,
+   "syllables": [
+    "PER",
+    "PUS",
+    "TA",
+    "KA",
+    "AN"
+   ]
+  },
+  {
+   "id": "l5-4",
+   "text": "PENDIDIKAN",
+   "level": 5,
+   "syllables": [
+    "PEN",
+    "DI",
+    "DI",
+    "KAN"
+   ]
+  },
+  {
+   "id": "l5-5",
+   "text": "MATAHARI",
+   "level": 5,
+   "syllables": [
+    "MA",
+    "TA",
+    "HA",
+    "RI"
+   ]
+  },
+  {
+   "id": "l5-6",
+   "text": "KUPU-KUPU",
+   "level": 5,
+   "syllables": [
+    "KU",
+    "PU",
+    "KU",
+    "PU"
+   ]
+  },
+  {
+   "id": "l5-7",
+   "text": "BERSAHABAT",
+   "level": 5,
+   "syllables": [
+    "BER",
+    "SA",
+    "HA",
+    "BAT"
+   ]
+  },
+  {
+   "id": "l5-8",
+   "text": "KEBERSAMAAN",
+   "level": 5,
+   "syllables": [
+    "KE",
+    "BER",
+    "SA",
+    "MA",
+    "AN"
+   ]
+  }
+ ]
+}

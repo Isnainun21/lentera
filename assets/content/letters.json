@@ -1,0 +1,93 @@
+{
+ "version": 1,
+ "questions": [
+  {
+   "id": "h1",
+   "target": "b",
+   "options": [
+    "b",
+    "d",
+    "p",
+    "b"
+   ],
+   "answers": [
+    0,
+    3
+   ],
+   "hint": "Huruf b: tangkai di kiri, perut ke kanan."
+  },
+  {
+   "id": "h2",
+   "target": "d",
+   "options": [
+    "b",
+    "d",
+    "d",
+    "q"
+   ],
+   "answers": [
+    1,
+    2
+   ],
+   "hint": "Huruf d: tangkai di kanan, perut ke kiri."
+  },
+  {
+   "id": "h3",
+   "target": "b",
+   "options": [
+    "d",
+    "b",
+    "q",
+    "p"
+   ],
+   "answers": [
+    1
+   ],
+   "hint": "Huruf b: tangkai di kiri, perut ke kanan."
+  },
+  {
+   "id": "h4",
+   "target": "d",
+   "options": [
+    "d",
+    "b",
+    "p",
+    "b"
+   ],
+   "answers": [
+    0
+   ],
+   "hint": "Huruf d: tangkai di kanan, perut ke kiri."
+  },
+  {
+   "id": "h5",
+   "target": "p",
+   "options": [
+    "p",
+    "q",
+    "b",
+    "p"
+   ],
+   "answers": [
+    0,
+    3
+   ],
+   "hint": "Huruf p: ekor ke bawah, perut ke kanan."
+  },
+  {
+   "id": "h6",
+   "target": "q",
+   "options": [
+    "p",
+    "q",
+    "q",
+    "d"
+   ],
+   "answers": [
+    1,
+    2
+   ],
+   "hint": "Huruf q: ekor ke bawah, perut ke kiri."
+  }
+ ]
+}
