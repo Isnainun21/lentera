@@ -60,6 +60,66 @@
      "syllables": "Di-na pa-ling su-ka bu-rung-bu-rung yang ber-nya-nyi mer-du."
     }
    ]
+  },
+  {
+   "id": "c4",
+   "title": "Layang-Layang Dodi",
+   "level": 1,
+   "color": "orange",
+   "pages": [
+    {
+     "text": "Dodi punya layang-layang biru.",
+     "syllables": "Do-di pu-nya la-yang-la-yang bi-ru."
+    },
+    {
+     "text": "Angin bertiup, layang-layang naik tinggi.",
+     "syllables": "A-ngin ber-ti-up, la-yang-la-yang na-ik ting-gi."
+    },
+    {
+     "text": "Dodi tertawa senang di lapangan.",
+     "syllables": "Do-di ter-ta-wa se-nang di la-pang-an."
+    }
+   ]
+  },
+  {
+   "id": "c5",
+   "title": "Pasar Pagi",
+   "level": 2,
+   "color": "sky",
+   "pages": [
+    {
+     "text": "Pagi ini Ibu dan Sari pergi ke pasar.",
+     "syllables": "Pa-gi i-ni I-bu dan Sa-ri per-gi ke pa-sar."
+    },
+    {
+     "text": "Mereka membeli sayur, ikan, dan buah.",
+     "syllables": "Me-re-ka mem-be-li sa-yur, i-kan, dan bu-ah."
+    },
+    {
+     "text": "Sari membawa keranjang kecil sendiri.",
+     "syllables": "Sa-ri mem-ba-wa ke-ran-jang ke-cil sen-di-ri."
+    }
+   ]
+  },
+  {
+   "id": "c6",
+   "title": "Hujan di Sore Hari",
+   "level": 2,
+   "color": "pink",
+   "pages": [
+    {
+     "text": "Sore itu langit mendung dan gelap.",
+     "syllables": "So-re i-tu la-ngit men-dung dan ge-lap."
+    },
+    {
+     "text": "Tik, tik, tik, hujan turun pelan-pelan.",
+     "syllables": "Tik, tik, tik, hu-jan tu-run pe-lan-pe-lan."
+    },
+    {
+     "text": "Budi memakai payung kuning lalu pulang.",
+     "syllables": "Bu-di me-ma-kai pa-yung ku-ning la-lu pu-lang."
+    }
+   ]
   }
  ]
 }

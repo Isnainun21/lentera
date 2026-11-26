@@ -29,7 +29,7 @@ class FakeRecognizer implements SpeechRecognizer {
 
 class FakeSpeaker implements Speaker {
   @override
-  Future<void> speak(String text, {double rate = 0.4}) async {}
+  Future<void> speak(String text, {double rate = 0.4, void Function(int start, int end)? onWord}) async {}
   @override
   Future<void> stop() async {}
 }
@@ -68,6 +68,17 @@ Future<void> tapText(WidgetTester tester, String text) async {
   await settle(tester);
 }
 
+Future<void> enterPin(WidgetTester tester, String pin) async {
+  for (final d in pin.split('')) {
+    final key = find.byKey(ValueKey('pin-$d'));
+    await tester.ensureVisible(key);
+    await tester.pump();
+    await tester.tap(key);
+    await tester.pump();
+  }
+  await settle(tester);
+}
+
 Future<void> completeSetup(WidgetTester tester) async {
   await settle(tester, 1500);
   expect(find.text('Untuk orang tua atau wali'), findsOneWidget);
@@ -76,9 +87,10 @@ Future<void> completeSetup(WidgetTester tester) async {
   await tester.tap(find.byType(Checkbox));
   await tester.pump();
   await tapText(tester, 'Setuju dan lanjut');
-  await tester.enterText(find.byType(TextField).at(0), '1234');
-  await tester.enterText(find.byType(TextField).at(1), '1234');
-  await tapText(tester, 'Simpan PIN');
+  expect(find.text('Buat PIN pendamping'), findsOneWidget);
+  await enterPin(tester, '1234');
+  expect(find.text('Ulangi PIN'), findsOneWidget);
+  await enterPin(tester, '1234');
   await tester.enterText(find.byType(TextField), 'Bima');
   await tester.pump();
   await tapText(tester, 'Buat profil');
@@ -188,14 +200,14 @@ void main() {
     await hold.up();
     await settle(tester);
     expect(find.text('Masukkan PIN'), findsOneWidget);
-    await tester.enterText(find.byType(TextField), '9999');
-    await tapText(tester, 'Buka');
+    await enterPin(tester, '9999');
     expect(find.text('PIN belum tepat.'), findsOneWidget);
-    await tester.enterText(find.byType(TextField), '1234');
-    await tapText(tester, 'Buka');
+    await enterPin(tester, '1234');
     await settle(tester, 500);
-    expect(find.text('Belum cukup data'), findsWidgets);
     expect(find.text('0 kata'), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('Dibanding minggu lalu'), 200, scrollable: find.byType(Scrollable).first);
+    await tester.pump();
+    expect(find.text('Belum cukup data'), findsWidgets);
     await finish(tester, db);
   });
 

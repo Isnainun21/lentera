@@ -7,9 +7,11 @@ Aplikasi Android untuk anak disleksia usia sekolah berlatih membaca kata dan suk
 - Anak: butuh satu tugas per layar, teks besar, umpan balik yang tidak menghakimi.
 - Pendamping: butuh data jujur dan ringkas.
 
-## Komitmen merek dari pemilik (2026-10-31)
+## Komitmen merek dari pemilik
 
-- Tampilan dekat dan polished seperti dua referensi di `DOCSS/referensi/`: kartu bersih, gambar besar dengan panel gelap, tombol hitam, cincin mingguan, tiga kolom warna, grafik batang berlapis.
+- 2026-11-26: dunia visual diganti menjadi **Tenun Kata** (setiap kata adalah benang, setiap sesi adalah pita kain). Referensi lama di `DOCSS/referensi/` sekarang hanya arsip.
+- Harus terasa seperti aplikasi mobile native dan responsif dari ponsel kecil sampai tablet, dalam orientasi tegak dan mendatar.
+- Ada tema terang dan gelap.
 - Warna harus hidup, bukan pucat.
 - Tidak ada bentuk lengkung lentera besar.
 - Tidak boleh terasa seperti template buatan AI.

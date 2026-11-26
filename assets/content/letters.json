@@ -88,6 +88,95 @@
     2
    ],
    "hint": "Huruf q: ekor ke bawah, perut ke kiri."
+  },
+  {
+   "id": "h7",
+   "target": "m",
+   "options": [
+    "m",
+    "n",
+    "m",
+    "w"
+   ],
+   "answers": [
+    0,
+    2
+   ],
+   "hint": "Huruf m: dua bukit di atas."
+  },
+  {
+   "id": "h8",
+   "target": "n",
+   "options": [
+    "u",
+    "n",
+    "m",
+    "n"
+   ],
+   "answers": [
+    1,
+    3
+   ],
+   "hint": "Huruf n: satu bukit di atas, terbuka ke bawah."
+  },
+  {
+   "id": "h9",
+   "target": "u",
+   "options": [
+    "n",
+    "u",
+    "u",
+    "v"
+   ],
+   "answers": [
+    1,
+    2
+   ],
+   "hint": "Huruf u: terbuka ke atas, seperti mangkuk."
+  },
+  {
+   "id": "h10",
+   "target": "q",
+   "options": [
+    "q",
+    "p",
+    "g",
+    "q"
+   ],
+   "answers": [
+    0,
+    3
+   ],
+   "hint": "Huruf q: ekor ke bawah, perut ke kiri."
+  },
+  {
+   "id": "h11",
+   "target": "p",
+   "options": [
+    "b",
+    "p",
+    "q",
+    "d"
+   ],
+   "answers": [
+    1
+   ],
+   "hint": "Huruf p: ekor ke bawah, perut ke kanan."
+  },
+  {
+   "id": "h12",
+   "target": "w",
+   "options": [
+    "m",
+    "w",
+    "v",
+    "w"
+   ],
+   "answers": [
+    1,
+    3
+   ],
+   "hint": "Huruf w: dua lembah di bawah, kebalikan dari m."
   }
  ]
 }

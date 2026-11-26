@@ -31,7 +31,10 @@
 | A7 | Beda Huruf | Memilih huruf target |
 | A8 | Rak Cerita | Memilih cerita |
 | A9 | Baca Cerita | Membaca satu halaman |
-| A10 | Koleksi lentera | Melihat hasil usaha |
+| A10 | Koleksi (Kain-ku dan stiker) | Melihat hasil usaha |
+| A11 | Susun Kata | Menyentuh suku kata sesuai urutan |
+| A12 | Dengar dan Pilih | Memilih kata yang didengar |
+| A13 | Kamus Kataku | Mendengar lagi kata yang sudah dibaca |
 
 Bottom navigation Mode Anak: **Beranda, Latihan, Cerita, Koleksi**. Area Pendamping tidak berada di navigasi ini, melainkan lewat ikon kecil di Beranda dengan tahan 3 detik dan kunci PIN.
 
@@ -123,4 +126,4 @@ P8 -> hapus data -> konfirmasi -> hapus di perangkat dan server
 - Rekaman suara untuk ditinjau guru.
 - Penilaian pelafalan berbasis machine learning buatan sendiri.
 - Kalender rekomendasi waktu belajar dan konten dari guru.
-- Dark mode. Alasan: satu tema dengan kontras terukur lebih aman untuk versi pertama, dan pengaturan warna huruf sudah menjadi prioritas aksesibilitas.
+- Pengingat latihan harian.

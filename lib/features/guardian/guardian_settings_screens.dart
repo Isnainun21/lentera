@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../app/providers.dart';
 import '../../core/design/components.dart';
+import '../../core/design/responsive.dart';
 import '../../core/design/tokens.dart';
 import '../../domain/child.dart';
 import 'guardian_screens.dart';
@@ -22,7 +23,7 @@ class _Stepper extends StatelessWidget {
   final ValueChanged<int> onChanged;
 
   @override
-  Widget build(BuildContext context) => CardBox(
+  Widget build(BuildContext context) => Panel(
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
@@ -39,14 +40,14 @@ class _Stepper extends StatelessWidget {
               tooltip: 'Kurangi $label',
               onPressed: value > min ? () => onChanged(value - 1) : null,
               icon: const Icon(Icons.remove_rounded),
-              style: IconButton.styleFrom(backgroundColor: AppColors.idle, minimumSize: const Size(48, 48)),
+              style: IconButton.styleFrom(backgroundColor: Pal.of(context).surfaceAlt, minimumSize: const Size(48, 48)),
             ),
             SizedBox(width: 44, child: Text('$value', style: AppText.heading, textAlign: TextAlign.center)),
             IconButton(
               tooltip: 'Tambah $label',
               onPressed: value < max ? () => onChanged(value + 1) : null,
               icon: const Icon(Icons.add_rounded),
-              style: IconButton.styleFrom(backgroundColor: AppColors.idle, minimumSize: const Size(48, 48)),
+              style: IconButton.styleFrom(backgroundColor: Pal.of(context).surfaceAlt, minimumSize: const Size(48, 48)),
             ),
           ],
         ),
@@ -65,8 +66,8 @@ class LearningSettingsScreen extends ConsumerWidget {
     final s = child.settings;
     return Scaffold(
       appBar: AppBar(title: const Text('Pengaturan belajar')),
-      body: ListView(
-        padding: const EdgeInsets.all(AppSpace.gutter),
+      body: PaneList(
+        maxWidth: 760,
         children: [
           _Stepper(label: 'Level', value: child.level, min: 1, max: 5, onChanged: (v) => repo.setLevelByGuardian(child.id, v)),
           const SizedBox(height: 8),
@@ -76,7 +77,7 @@ class LearningSettingsScreen extends ConsumerWidget {
           const SizedBox(height: 8),
           _Stepper(label: 'Turun level', help: 'setelah sekian kata belum tepat berturut-turut', value: s.lowerAfter, min: 1, max: 5, onChanged: (v) => update(s.copyWith(lowerAfter: v))),
           const SizedBox(height: 8),
-          CardBox(
+          Panel(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             child: SwitchListTile(
               value: s.guided,
@@ -98,30 +99,70 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final child = ref.watch(activeChildProvider);
     if (child == null) return const Scaffold(body: SizedBox.shrink());
+    final p = Pal.of(context);
     final s = child.settings;
     void update(ChildSettings next) => ref.read(repositoryProvider).updateSettings(child.id, next);
     Widget toggle(String title, String detail, bool value, ValueChanged<bool> onChanged) => Padding(
           padding: const EdgeInsets.only(bottom: 8),
-          child: CardBox(
+          child: Panel(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             child: SwitchListTile(
               value: value,
               onChanged: onChanged,
               title: Text(title, style: AppText.bodyStrong),
-              subtitle: Text(detail, style: AppText.caption),
+              subtitle: Text(detail, style: AppText.caption.copyWith(color: p.subInk)),
             ),
           ),
         );
+    final tint = ReadingTint.values.where((t) => t.name == s.tint).firstOrNull ?? ReadingTint.none;
+    final brightness = Theme.of(context).brightness;
     return Scaffold(
-      appBar: AppBar(title: const Text('Aksesibilitas')),
-      body: ListView(
-        padding: const EdgeInsets.all(AppSpace.gutter),
+      appBar: AppBar(title: const Text('Tampilan dan aksesibilitas')),
+      body: PaneList(
+        maxWidth: 760,
         children: [
-          CardBox(
+          Panel(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Ukuran huruf', style: AppText.bodyStrong),
+                Text('Tema', style: AppText.bodyStrong),
+                const SizedBox(height: 4),
+                Text('Tema gelap nyaman untuk membaca di malam hari.', style: AppText.caption.copyWith(color: p.subInk)),
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  child: SegmentedButton<String>(
+                    segments: const [
+                      ButtonSegment(value: 'light', label: Text('Terang', softWrap: false)),
+                      ButtonSegment(value: 'dark', label: Text('Gelap', softWrap: false)),
+                      ButtonSegment(value: 'system', label: Text('Sistem', softWrap: false)),
+                    ],
+                    selected: {s.theme},
+                    showSelectedIcon: false,
+                    onSelectionChanged: (v) => update(s.copyWith(theme: v.first)),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
+          Panel(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Bacaan cerita', style: AppText.bodyStrong),
+                const SizedBox(height: 12),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(color: tint.of(brightness) ?? p.ground, borderRadius: BorderRadius.circular(AppSpace.tileRadius)),
+                  child: Text(
+                    'Bi-ma pu-nya ku-cing.',
+                    style: AppText.reading.copyWith(letterSpacing: AppText.reading.letterSpacing! + s.letterSpacing, wordSpacing: s.letterSpacing * 2),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text('Ukuran huruf', style: AppText.label),
                 Slider(
                   value: s.fontScale,
                   min: 1,
@@ -130,23 +171,47 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
                   label: '${(s.fontScale * 100).round()}%',
                   onChanged: (v) => update(s.copyWith(fontScale: v)),
                 ),
-                Text('Contoh bacaan', style: AppText.reading),
+                Text('Jarak huruf', style: AppText.label),
+                Slider(
+                  value: s.letterSpacing,
+                  min: 0,
+                  max: 4,
+                  divisions: 4,
+                  label: s.letterSpacing == 0 ? 'Normal' : '+${s.letterSpacing.round()}',
+                  onChanged: (v) => update(s.copyWith(letterSpacing: v)),
+                ),
+                Text('Warna latar bacaan', style: AppText.label),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (final t in ReadingTint.values)
+                      ChoiceChip(
+                        label: Text(t.label),
+                        selected: t == tint,
+                        showCheckmark: false,
+                        avatar: Container(
+                          width: 18,
+                          height: 18,
+                          decoration: BoxDecoration(color: t.of(brightness) ?? p.surface, borderRadius: BorderRadius.circular(4), border: Border.all(color: p.line)),
+                        ),
+                        selectedColor: Thread.kesumba,
+                        labelStyle: AppText.label.copyWith(color: t == tint ? Thread.onThread : p.ink),
+                        onSelected: (_) => update(s.copyWith(tint: t.name)),
+                      ),
+                  ],
+                ),
               ],
             ),
           ),
           const SizedBox(height: 8),
-          CardBox(
+          Panel(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Kecepatan suara', style: AppText.bodyStrong),
-                Slider(
-                  value: s.speechRate,
-                  min: 0.2,
-                  max: 0.6,
-                  divisions: 4,
-                  onChanged: (v) => update(s.copyWith(speechRate: v)),
-                ),
+                Slider(value: s.speechRate, min: 0.2, max: 0.6, divisions: 4, onChanged: (v) => update(s.copyWith(speechRate: v))),
                 QuietAction(
                   label: 'Dengarkan contoh',
                   icon: Icons.volume_up_rounded,
@@ -244,10 +309,10 @@ class _AccountSyncScreenState extends ConsumerState<AccountSyncScreen> {
     final gateway = ref.watch(supabaseGatewayProvider);
     return Scaffold(
       appBar: AppBar(title: const Text('Akun dan sinkron')),
-      body: ListView(
-        padding: const EdgeInsets.all(AppSpace.gutter),
+      body: PaneList(
+        maxWidth: 760,
         children: [
-          CardBox(
+          Panel(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -259,7 +324,7 @@ class _AccountSyncScreenState extends ConsumerState<AccountSyncScreen> {
           ),
           const SizedBox(height: 12),
           if (gateway == null)
-            const CardBox(child: MessageState(title: 'Sinkron belum diatur', body: 'Versi aplikasi ini belum terhubung ke server. Lentera tetap berfungsi penuh di perangkat ini.'))
+            const Panel(child: MessageState(title: 'Sinkron belum diatur', body: 'Versi aplikasi ini belum terhubung ke server. Lentera tetap berfungsi penuh di perangkat ini.'))
           else if (!gateway.signedIn)
             ..._signedOut()
           else
@@ -379,8 +444,8 @@ class DataScreen extends ConsumerWidget {
     final child = ref.watch(activeChildProvider);
     return Scaffold(
       appBar: AppBar(title: const Text('Data, laporan, dan profil')),
-      body: ListView(
-        padding: const EdgeInsets.all(AppSpace.gutter),
+      body: PaneList(
+        maxWidth: 760,
         children: [
           QuietAction(label: 'Bagikan laporan PDF', icon: Icons.picture_as_pdf_outlined, onPressed: () => _export(context, ref)),
           const SizedBox(height: 8),

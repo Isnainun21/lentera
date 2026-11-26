@@ -40,7 +40,13 @@ class _LenteraAppState extends ConsumerState<LenteraApp> with WidgetsBindingObse
     return MaterialApp.router(
       title: 'Lentera',
       debugShowCheckedModeBanner: false,
-      theme: buildTheme(),
+      theme: buildTheme(Brightness.light),
+      darkTheme: buildTheme(Brightness.dark),
+      themeMode: switch (settings?.theme) {
+        'light' => ThemeMode.light,
+        'dark' => ThemeMode.dark,
+        _ => ThemeMode.system,
+      },
       routerConfig: ref.watch(routerProvider),
       builder: (context, child) {
         final media = MediaQuery.of(context);

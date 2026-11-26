@@ -55,3 +55,7 @@ app.*.map.json
 /.taste-skill/
 
 /dist/
+
+# Impeccable: halaman pilihan sementara
+.impeccable/questions/
+.impeccable/review/

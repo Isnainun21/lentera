@@ -22,7 +22,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   Future<void> _route() async {
     final repo = ref.read(repositoryProvider);
-    await Future<void>.delayed(const Duration(milliseconds: 900));
     final hasPin = await repo.hasPin();
     final children = await repo.watchChildren().first;
     final active = await repo.readKey('activeChild');
@@ -38,18 +37,26 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        backgroundColor: AppColors.deep,
-        body: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const LogoMark(size: 112),
-              const SizedBox(height: 20),
-              Text('Lentera', style: AppText.wordHero.copyWith(color: Colors.white, fontSize: 52)),
-              const SizedBox(height: 10),
-              Text('Belajar membaca, pelan-pelan', style: AppText.body.copyWith(color: const Color(0xFFE6EEF0))),
-            ],
-          ),
+        backgroundColor: Thread.tarum,
+        body: Column(
+          children: [
+            const Selvedge(height: 14),
+            Expanded(
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const LogoMark(size: 104),
+                    const SizedBox(height: 20),
+                    Text('Lentera', style: AppText.wordHero.copyWith(color: Colors.white, fontSize: 52)),
+                    const SizedBox(height: 8),
+                    Text('Satu kata, satu benang', style: AppText.body.copyWith(color: const Color(0xFFDDE3F5))),
+                  ],
+                ),
+              ),
+            ),
+            const Selvedge(height: 14),
+          ],
         ),
       );
 }

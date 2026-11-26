@@ -6,6 +6,7 @@ import '../../app/providers.dart';
 import '../../content/content.dart';
 import '../../core/db/database.dart';
 import '../../core/design/components.dart';
+import '../../core/design/responsive.dart';
 import '../../core/design/tokens.dart';
 import '../../domain/practice/models.dart';
 import '../../domain/progress/stats.dart';
@@ -18,24 +19,15 @@ class GuardianPinScreen extends ConsumerStatefulWidget {
 }
 
 class _GuardianPinScreenState extends ConsumerState<GuardianPinScreen> {
-  final _pin = TextEditingController();
   String? _error;
 
-  @override
-  void dispose() {
-    _pin.dispose();
-    super.dispose();
-  }
-
-  Future<void> _submit() async {
-    if (await ref.read(repositoryProvider).checkPin(_pin.text.trim())) {
+  Future<bool> _submit(String pin) async {
+    if (await ref.read(repositoryProvider).checkPin(pin)) {
       if (mounted) context.pushReplacement('/guardian');
-    } else {
-      setState(() {
-        _error = 'PIN belum tepat.';
-        _pin.clear();
-      });
+      return true;
     }
+    setState(() => _error = 'PIN belum tepat.');
+    return false;
   }
 
   Future<void> _forgot() async {
@@ -43,10 +35,16 @@ class _GuardianPinScreenState extends ConsumerState<GuardianPinScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Lupa PIN?'),
-        content: const Text('PIN hanya tersimpan di perangkat ini. Untuk membuat PIN baru, semua data Lentera di perangkat ini harus dihapus. Data yang sudah tersinkron bisa diambil lagi setelah masuk ke akun.'),
+        content: const Text(
+          'PIN hanya tersimpan di perangkat ini. Untuk membuat PIN baru, semua data Lentera di perangkat ini harus dihapus. Data yang sudah tersinkron bisa diambil lagi setelah masuk ke akun.',
+        ),
         actions: [
           TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Batal')),
-          TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Hapus data perangkat')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: TextButton.styleFrom(foregroundColor: Pal.of(ctx).retry),
+            child: const Text('Hapus data perangkat'),
+          ),
         ],
       ),
     );
@@ -57,46 +55,42 @@ class _GuardianPinScreenState extends ConsumerState<GuardianPinScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(title: const Text('Area Pendamping')),
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpace.gutter),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text('Masukkan PIN', style: AppText.title),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: _pin,
-                  autofocus: true,
-                  obscureText: true,
-                  maxLength: 4,
-                  keyboardType: TextInputType.number,
-                  style: AppText.heading,
-                  decoration: const InputDecoration(labelText: 'PIN 4 angka', counterText: ''),
-                  onSubmitted: (_) => _submit(),
-                ),
-                if (_error != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 12),
-                    child: Text(_error!, style: AppText.bodyGuardian.copyWith(color: AppColors.retry)),
-                  ),
-                const SizedBox(height: 16),
-                PrimaryAction(label: 'Buka', onPressed: _submit),
-                const SizedBox(height: 8),
-                TextButton(onPressed: _forgot, child: Text('Lupa PIN', style: AppText.bodyGuardian)),
-              ],
-            ),
+    appBar: AppBar(title: const Text('Area Pendamping')),
+    body: SafeArea(
+      child: Center(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.all(gutterFor(context)),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Masukkan PIN', style: AppText.title),
+              const SizedBox(height: 6),
+              Text('Area ini untuk orang tua dan guru.', style: AppText.bodyGuardian.copyWith(color: Pal.of(context).subInk)),
+              const SizedBox(height: 24),
+              PinPad(onComplete: _submit, error: _error),
+              const SizedBox(height: 12),
+              TextButton(onPressed: _forgot, child: const Text('Lupa PIN')),
+            ],
           ),
         ),
-      );
+      ),
+    ),
+  );
 }
 
 /// Ringkasan yang dihitung sekali untuk layar dan laporan.
 class ChildSummary {
-  ChildSummary(List<AttemptRecord> attempts, List<PracticeSession> sessions, Content content, DateTime now)
-      : wordAttempts = attempts.where((a) => a.wordId.startsWith('l')).toList(),
-        letterAttempts = attempts.where((a) => a.wordId.startsWith('h')).toList() {
+  ChildSummary(List<AttemptRecord> attempts, List<PracticeSession> sessions, Content content, DateTime now) {
+    // Susun Kata dan Dengar dan Pilih memakai kata yang sama, tetapi tidak menguji ucapan,
+    // jadi tidak ikut ke ketepatan membaca.
+    final notReading = {
+      for (final s in sessions)
+        if (s.kind == 'build' || s.kind == 'listen') s.id,
+    };
+    wordAttempts = attempts.where((a) => a.wordId.startsWith('l') && !notReading.contains(a.sessionId)).toList();
+    letterAttempts = attempts.where((a) => a.wordId.startsWith('h')).toList();
+    gameAttempts = attempts.where((a) => notReading.contains(a.sessionId)).toList();
+
     final results = ProgressStats.wordResults(wordAttempts);
     final weekStart = ProgressStats.startOfWeek(now);
     final lastWeekStart = DateTime(weekStart.year, weekStart.month, weekStart.day - 7);
@@ -111,6 +105,7 @@ class ChildSummary {
 
     final ended = sessions.where((s) => s.endedAt != null && !s.endedAt!.isBefore(weekStart));
     minutesThisWeek = ended.fold<int>(0, (sum, s) => sum + s.endedAt!.difference(s.startedAt).inSeconds) ~/ 60;
+    sessionsThisWeek = ended.length;
 
     difficult = [
       for (final id in ProgressStats.difficultWords(wordAttempts))
@@ -119,31 +114,38 @@ class ChildSummary {
 
     letterAccuracy = {
       for (final letter in const ['b', 'd'])
-        letter: ProgressStats.accuracy(ProgressStats.wordResults([
-          ...wordAttempts.where((a) => content.wordById(a.wordId)?.text.toLowerCase().contains(letter) ?? false),
-          ...letterAttempts.where((a) => content.letters.any((q) => q.id == a.wordId && q.target == letter)),
-        ])),
+        letter: ProgressStats.accuracy(
+          ProgressStats.wordResults([
+            ...wordAttempts.where((a) => content.wordById(a.wordId)?.text.toLowerCase().contains(letter) ?? false),
+            ...letterAttempts.where((a) => content.letters.any((q) => q.id == a.wordId && q.target == letter)),
+          ]),
+        ),
     };
 
-    dayBars = [
-      for (var i = 6; i >= 0; i--)
+    List<DayBar> bars(int days) => [
+      for (var i = days - 1; i >= 0; i--)
         () {
           final day = DateTime(now.year, now.month, now.day - i);
           final inDay = ProgressStats.between(results, day, DateTime(day.year, day.month, day.day + 1)).where((r) => r.counted);
           return DayBar(day, inDay.where((r) => r.correctAlone).length, inDay.where((r) => !r.correctAlone).length);
         }(),
     ];
+    dayBars = bars(7);
+    dayBars30 = bars(30);
   }
 
-  final List<AttemptRecord> wordAttempts;
-  final List<AttemptRecord> letterAttempts;
+  late final List<AttemptRecord> wordAttempts;
+  late final List<AttemptRecord> letterAttempts;
+  late final List<AttemptRecord> gameAttempts;
   late final int wordsThisWeek;
   late final double? accuracy;
   late final double? trend;
   late final int minutesThisWeek;
+  late final int sessionsThisWeek;
   late final List<Word> difficult;
   late final Map<String, double?> letterAccuracy;
   late final List<DayBar> dayBars;
+  late final List<DayBar> dayBars30;
 }
 
 class DayBar {
@@ -156,99 +158,301 @@ class DayBar {
 
 String percent(double? v) => v == null ? 'Belum cukup data' : '${(v * 100).round()}%';
 
-class GuardianSummaryScreen extends ConsumerWidget {
+/// Statistik satu kata dari log percobaan.
+class WordStat {
+  WordStat(this.word, List<AttemptRecord> attempts)
+    : tries = attempts.length,
+      results = ProgressStats.wordResults(attempts),
+      last = attempts.map((a) => a.occurredAt).reduce((a, b) => a.isAfter(b) ? a : b);
+
+  final Word word;
+  final int tries;
+  final List<WordResult> results;
+  final DateTime last;
+
+  int get alone => results.where((r) => r.correctAlone).length;
+  int get counted => results.where((r) => r.counted).length;
+}
+
+List<WordStat> wordStats(List<AttemptRecord> attempts, Content content) {
+  final groups = <String, List<AttemptRecord>>{};
+  for (final a in attempts) {
+    groups.putIfAbsent(a.wordId, () => []).add(a);
+  }
+  return [
+    for (final e in groups.entries)
+      if (content.wordById(e.key) != null) WordStat(content.wordById(e.key)!, e.value),
+  ]..sort((a, b) => b.tries.compareTo(a.tries));
+}
+
+Future<void> showWordDetail(BuildContext context, WidgetRef ref, WordStat s) => showModalBottomSheet<void>(
+  context: context,
+  isScrollControlled: true,
+  builder: (sheet) {
+    final p = Pal.of(sheet);
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(AppSpace.gutter, 0, AppSpace.gutter, AppSpace.gutter),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(s.word.text, style: AppText.title),
+            Text('${s.word.syllables.join(' · ')} · level ${s.word.level}', style: AppText.caption.copyWith(color: p.subInk)),
+            const SizedBox(height: 16),
+            _Metric(label: 'Percobaan', value: '${s.tries}'),
+            const SizedBox(height: 8),
+            _Metric(label: 'Selesai dan terhitung', value: '${s.counted} kali'),
+            const SizedBox(height: 8),
+            _Metric(label: 'Benar tanpa bantuan', value: '${s.alone} kali'),
+            const SizedBox(height: 8),
+            _Metric(label: 'Terakhir dilatih', value: '${s.last.day}/${s.last.month}/${s.last.year}'),
+            const SizedBox(height: 20),
+            PrimaryAction(
+              label: 'Latih di sesi berikutnya',
+              onPressed: () {
+                ref.read(priorityWordsProvider.notifier).add(s.word.id);
+                Navigator.pop(sheet);
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${s.word.text} masuk sesi berikutnya.')));
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  },
+);
+
+Future<void> _switchChild(BuildContext context, WidgetRef ref) => showModalBottomSheet<void>(
+  context: context,
+  builder: (sheet) {
+    final children = ref.read(childrenProvider).value ?? const [];
+    final active = ref.read(activeChildProvider)?.id;
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(AppSpace.gutter, 0, AppSpace.gutter, AppSpace.gutter),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text('Lihat data anak', style: AppText.heading),
+            const SizedBox(height: 12),
+            for (final c in children)
+              ListTile(
+                minTileHeight: AppSpace.tapChild,
+                leading: AvatarMotif(avatarId: c.avatarId, size: 40),
+                title: Text(c.nickname, style: AppText.bodyStrong),
+                trailing: c.id == active ? const Icon(Icons.check_rounded) : null,
+                onTap: () async {
+                  Navigator.pop(sheet);
+                  await ref.read(repositoryProvider).writeKey('activeChild', c.id);
+                },
+              ),
+            const SizedBox(height: 8),
+            QuietAction(
+              label: 'Tambah profil anak',
+              icon: Icons.person_add_alt_rounded,
+              onPressed: () {
+                Navigator.pop(sheet);
+                context.push('/setup?add=1');
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  },
+);
+
+class GuardianSummaryScreen extends ConsumerStatefulWidget {
   const GuardianSummaryScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<GuardianSummaryScreen> createState() => _GuardianSummaryScreenState();
+}
+
+class _GuardianSummaryScreenState extends ConsumerState<GuardianSummaryScreen> {
+  bool _month = false;
+
+  @override
+  Widget build(BuildContext context) {
     final child = ref.watch(activeChildProvider);
     final attempts = ref.watch(attemptsProvider);
     final sessions = ref.watch(sessionsProvider);
     final content = ref.watch(contentProvider);
+    final p = Pal.of(context);
     if (child == null) {
       return Scaffold(
         appBar: AppBar(),
-        body: const Center(child: MessageState(title: 'Pilih profil anak terlebih dahulu')),
+        body: const Center(
+          child: MessageState(title: 'Pilih profil anak terlebih dahulu', motif: Motif.kawung),
+        ),
       );
     }
+    final many = (ref.watch(childrenProvider).value ?? const []).length > 1;
     return Scaffold(
-      appBar: AppBar(title: Text(child.nickname)),
+      appBar: AppBar(
+        title: Row(
+          children: [
+            AvatarMotif(avatarId: child.avatarId, size: 36),
+            const SizedBox(width: 12),
+            Flexible(child: Text(child.nickname, overflow: TextOverflow.ellipsis)),
+          ],
+        ),
+        actions: [
+          TextButton.icon(
+            onPressed: () => _switchChild(context, ref),
+            icon: const Icon(Icons.swap_horiz_rounded),
+            label: Text(many ? 'Ganti anak' : 'Anak'),
+          ),
+          const SizedBox(width: 8),
+        ],
+      ),
       body: attempts.when(
-        loading: () => const Center(child: CircularProgressIndicator(color: AppColors.ink)),
-        error: (_, _) => const Center(child: MessageState(title: 'Data belum bisa dimuat', body: 'Tutup lalu buka lagi Area Pendamping.')),
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (_, _) => const Center(
+          child: MessageState(title: 'Data belum bisa dimuat', body: 'Tutup lalu buka lagi Area Pendamping.'),
+        ),
         data: (list) {
           final s = ChildSummary(list, sessions.value ?? const [], content, DateTime.now());
-          return ListView(
-            padding: const EdgeInsets.all(AppSpace.gutter),
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(child: _Pillar(color: AppColors.sky, icon: Icons.abc_rounded, label: 'Level', value: '${child.level}')),
-                  const SizedBox(width: 10),
-                  Expanded(child: _Pillar(color: AppColors.leaf, icon: Icons.schedule_rounded, label: 'Menit', value: '${s.minutesThisWeek}')),
-                  const SizedBox(width: 10),
-                  Expanded(child: _Pillar(color: AppColors.lantern, icon: Icons.check_rounded, label: 'Ketepatan', value: s.accuracy == null ? '-' : percent(s.accuracy))),
-                ],
-              ),
-              const SizedBox(height: 12),
-              CardBox(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('${s.wordsThisWeek} kata', style: AppText.metric),
-                    Text('selesai minggu ini', style: AppText.bodyGuardian),
-                    const SizedBox(height: 16),
-                    TrendBars(bars: s.dayBars),
-                    const SizedBox(height: 10),
-                    const _Legend(),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 12),
-              CardBox(
-                child: Wrap(
-                  runSpacing: 16,
-                  children: [
-                    _Metric(
-                      label: 'Dibanding minggu lalu',
-                      value: s.trend == null ? 'Belum cukup data' : '${s.trend! >= 0 ? '+' : ''}${(s.trend! * 100).round()} poin',
+          final stats = Panel(
+            child: Column(
+              children: [
+                _Metric(label: 'Level sekarang', value: '${child.level}'),
+                const SizedBox(height: 14),
+                _Metric(label: 'Waktu latihan minggu ini', value: '${s.minutesThisWeek} menit'),
+                const SizedBox(height: 14),
+                _Metric(label: 'Ketepatan minggu ini', value: percent(s.accuracy)),
+                if (s.accuracy == null) ...[
+                  const SizedBox(height: 4),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Ketepatan muncul setelah ${ProgressStats.minWordsForAccuracy} kata terhitung.',
+                      style: AppText.caption.copyWith(color: p.subInk),
                     ),
-                    _Metric(label: 'Huruf b', value: percent(s.letterAccuracy['b'])),
-                    _Metric(label: 'Huruf d', value: percent(s.letterAccuracy['d'])),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 12),
-              CardBox(
-                child: Column(
+                  ),
+                ],
+              ],
+            ),
+          );
+          final trend = Panel(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Kata yang perlu latihan', style: AppText.bodyStrong),
-                    const SizedBox(height: 8),
-                    if (s.difficult.isEmpty)
-                      Text('Belum ada. Kata muncul di sini setelah 2 kali belum tepat.', style: AppText.bodyGuardian),
-                    for (final w in s.difficult)
-                      ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        title: Text(w.text, style: AppText.bodyStrong),
-                        trailing: TextButton(
-                          onPressed: () {
-                            ref.read(priorityWordsProvider.notifier).add(w.id);
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${w.text} masuk sesi berikutnya.')));
-                          },
-                          child: const Text('Latih di sesi berikutnya'),
-                        ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('${s.wordsThisWeek} kata', style: AppText.metric),
+                          Text('selesai minggu ini, ${s.sessionsThisWeek} sesi', style: AppText.bodyGuardian.copyWith(color: p.subInk)),
+                        ],
                       ),
+                    ),
+                    SegmentedButton<bool>(
+                      segments: const [
+                        ButtonSegment(value: false, label: Text('7 hari')),
+                        ButtonSegment(value: true, label: Text('30 hari')),
+                      ],
+                      selected: {_month},
+                      showSelectedIcon: false,
+                      onSelectionChanged: (v) => setState(() => _month = v.first),
+                    ),
                   ],
                 ),
-              ),
+                const SizedBox(height: 18),
+                TrendBars(bars: _month ? s.dayBars30 : s.dayBars),
+                const SizedBox(height: 10),
+                const _Legend(),
+              ],
+            ),
+          );
+          final compare = Panel(
+            child: Column(
+              children: [
+                _Metric(
+                  label: 'Dibanding minggu lalu',
+                  value: s.trend == null ? 'Belum cukup data' : '${s.trend! >= 0 ? '+' : ''}${(s.trend! * 100).round()} poin',
+                ),
+                const SizedBox(height: 14),
+                _Metric(label: 'Huruf b', value: percent(s.letterAccuracy['b'])),
+                const SizedBox(height: 14),
+                _Metric(label: 'Huruf d', value: percent(s.letterAccuracy['d'])),
+                const SizedBox(height: 14),
+                _Metric(label: 'Kata di permainan', value: '${ProgressStats.wordResults(s.gameAttempts).length}'),
+              ],
+            ),
+          );
+          final stat = {for (final w in wordStats(s.wordAttempts, content)) w.word.id: w};
+          final difficult = Panel(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Kata yang perlu latihan', style: AppText.bodyStrong),
+                const SizedBox(height: 8),
+                if (s.difficult.isEmpty)
+                  Text('Belum ada. Kata muncul di sini setelah 2 kali belum tepat.', style: AppText.bodyGuardian.copyWith(color: p.subInk)),
+                for (final w in s.difficult)
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    minTileHeight: AppSpace.tapGuardian,
+                    title: Text(w.text, style: AppText.bodyStrong),
+                    subtitle: stat[w.id] == null ? null : Text('${stat[w.id]!.tries} percobaan', style: AppText.caption),
+                    trailing: const Icon(Icons.chevron_right_rounded),
+                    onTap: stat[w.id] == null ? null : () => showWordDetail(context, ref, stat[w.id]!),
+                  ),
+              ],
+            ),
+          );
+          const navItems = [
+            ('Riwayat sesi', Icons.history_rounded, '/guardian/history'),
+            ('Semua kata', Icons.list_alt_rounded, '/guardian/words'),
+            ('Pengaturan belajar', Icons.tune_rounded, '/guardian/learning'),
+            ('Tampilan dan aksesibilitas', Icons.accessibility_new_rounded, '/guardian/access'),
+            ('Akun dan sinkron', Icons.sync_rounded, '/guardian/account'),
+            ('Data, laporan, dan profil', Icons.folder_outlined, '/guardian/data'),
+          ];
+          final nav = Panel(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Column(
+              children: [
+                for (final (i, (label, icon, path)) in navItems.indexed) ...[
+                  if (i > 0) const Divider(indent: 56),
+                  _NavRow(label: label, icon: icon, path: path),
+                ],
+              ],
+            ),
+          );
+          if (WindowSize.of(context).isWide) {
+            return PaneList(
+              maxWidth: 1200,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(flex: 7, child: Column(children: [stats, const SizedBox(height: 12), trend, const SizedBox(height: 12), difficult])),
+                    const SizedBox(width: 20),
+                    Expanded(flex: 5, child: Column(children: [compare, const SizedBox(height: 12), nav])),
+                  ],
+                ),
+              ],
+            );
+          }
+          return PaneList(
+            maxWidth: 760,
+            children: [
+              stats,
               const SizedBox(height: 12),
-              _NavRow(label: 'Riwayat sesi', icon: Icons.history_rounded, path: '/guardian/history'),
-              _NavRow(label: 'Pengaturan belajar', icon: Icons.tune_rounded, path: '/guardian/learning'),
-              _NavRow(label: 'Aksesibilitas', icon: Icons.accessibility_new_rounded, path: '/guardian/access'),
-              _NavRow(label: 'Akun dan sinkron', icon: Icons.sync_rounded, path: '/guardian/account'),
-              _NavRow(label: 'Data, laporan, dan profil', icon: Icons.folder_outlined, path: '/guardian/data'),
+              trend,
+              const SizedBox(height: 12),
+              compare,
+              const SizedBox(height: 12),
+              difficult,
+              const SizedBox(height: 12),
+              nav,
             ],
           );
         },
@@ -257,39 +461,7 @@ class GuardianSummaryScreen extends ConsumerWidget {
   }
 }
 
-class _Pillar extends StatelessWidget {
-  const _Pillar({required this.color, required this.icon, required this.label, required this.value});
-
-  final Color color;
-  final IconData icon;
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) => Semantics(
-        label: '$label $value',
-        excludeSemantics: true,
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(8, 12, 8, 18),
-          decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(40)),
-          child: Column(
-            children: [
-              Container(
-                width: 44,
-                height: 44,
-                decoration: const BoxDecoration(color: AppColors.ink, shape: BoxShape.circle),
-                child: Icon(icon, color: Colors.white, size: 24),
-              ),
-              const SizedBox(height: 12),
-              FittedBox(fit: BoxFit.scaleDown, child: Text(label, style: AppText.caption.copyWith(color: AppColors.ink))),
-              const SizedBox(height: 6),
-              FittedBox(fit: BoxFit.scaleDown, child: Text(value, style: AppText.metric.copyWith(fontSize: 26))),
-            ],
-          ),
-        ),
-      );
-}
-
+/// Label dan nilai. Di kartu sempit nilai turun ke bawah label, supaya tidak ada yang terlipat di tengah.
 class _Metric extends StatelessWidget {
   const _Metric({required this.label, required this.value});
 
@@ -298,18 +470,20 @@ class _Metric extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
-        builder: (context, c) => SizedBox(
-          width: double.infinity,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        builder: (context, c) {
+          final labelText = Text(label, style: AppText.bodyGuardian.copyWith(color: Pal.of(context).subInk));
+          final valueText = Text(value, style: AppText.bodyStrong);
+          if (c.maxWidth < 520) {
+            return SizedBox(
+              width: double.infinity,
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [labelText, const SizedBox(height: 2), valueText]),
+            );
+          }
+          return Row(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(child: Text(label, style: AppText.bodyGuardian)),
-              const SizedBox(width: 12),
-              Flexible(child: Text(value, style: AppText.bodyStrong, textAlign: TextAlign.end)),
-            ],
-          ),
-        ),
+            children: [Expanded(child: labelText), const SizedBox(width: 16), valueText],
+          );
+        },
       );
 }
 
@@ -321,44 +495,38 @@ class _NavRow extends StatelessWidget {
   final String path;
 
   @override
-  Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.only(bottom: 8),
-        child: Material(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(AppSpace.tileRadius),
-          child: ListTile(
-            minTileHeight: AppSpace.tapChild,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpace.tileRadius)),
-            leading: Icon(icon, color: AppColors.ink),
-            title: Text(label, style: AppText.bodyGuardian),
-            trailing: const Icon(Icons.chevron_right_rounded, color: AppColors.ink),
-            onTap: () => context.push(path),
-          ),
-        ),
-      );
+  Widget build(BuildContext context) => ListTile(
+    minTileHeight: AppSpace.tapChild,
+    leading: Icon(icon),
+    title: Text(label, style: AppText.bodyGuardian),
+    trailing: const Icon(Icons.chevron_right_rounded),
+    onTap: () => context.push(path),
+  );
 }
 
 class _Legend extends StatelessWidget {
   const _Legend();
 
-  Widget _key(Color c, String label) => Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(width: 12, height: 12, decoration: BoxDecoration(color: c, shape: BoxShape.circle)),
-          const SizedBox(width: 6),
-          Flexible(child: Text(label, style: AppText.caption)),
-        ],
-      );
-
   @override
-  Widget build(BuildContext context) => Wrap(
-        spacing: 14,
-        runSpacing: 4,
-        children: [_key(AppColors.ok, 'Benar sendiri'), _key(AppColors.lantern, 'Dibantu')],
-      );
+  Widget build(BuildContext context) {
+    final p = Pal.of(context);
+    Widget key(Color c, String label) => Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 14,
+          height: 10,
+          decoration: BoxDecoration(color: c, borderRadius: BorderRadius.circular(2)),
+        ),
+        const SizedBox(width: 6),
+        Flexible(child: Text(label, style: AppText.caption)),
+      ],
+    );
+    return Wrap(spacing: 14, runSpacing: 4, children: [key(p.ok, 'Benar sendiri'), key(Thread.kunyit, 'Dibantu')]);
+  }
 }
 
-/// Batang berlapis untuk 7 hari terakhir.
+/// Batang berlapis per hari dengan skala tetap dari puncak periode.
 class TrendBars extends StatelessWidget {
   const TrendBars({super.key, required this.bars});
 
@@ -367,47 +535,88 @@ class TrendBars extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = Pal.of(context);
     final peak = bars.fold<int>(0, (m, b) => b.alone + b.helped > m ? b.alone + b.helped : m);
     final total = bars.fold<int>(0, (m, b) => m + b.alone + b.helped);
+    final dense = bars.length > 7;
+    // Skala tetap: paling sedikit 10 kata, naik per 5, supaya minggu sepi tidak tampak setinggi minggu ramai.
+    final ceiling = peak <= 10 ? 10 : ((peak + 4) ~/ 5) * 5;
+    const plot = 96.0;
     return Semantics(
-      label: '7 hari terakhir: $total kata selesai',
+      label: '${bars.length} hari terakhir: $total kata selesai',
       excludeSemantics: true,
       child: SizedBox(
-        height: 130,
+        height: 140,
         child: total == 0
-            ? Center(child: Text('Belum ada latihan 7 hari terakhir.', style: AppText.bodyGuardian))
-            : Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
+            ? Center(
+                child: Text('Belum ada latihan ${bars.length} hari terakhir.', style: AppText.bodyGuardian.copyWith(color: p.subInk)),
+              )
+            : Stack(
                 children: [
-                  for (final b in bars)
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            if (b.helped > 0)
-                              Container(
-                                height: 90 * b.helped / peak,
-                                decoration: const BoxDecoration(
-                                  color: AppColors.lantern,
-                                  borderRadius: BorderRadius.vertical(top: Radius.circular(6)),
-                                ),
-                              ),
-                            if (b.alone > 0)
-                              Container(
-                                height: 90 * b.alone / peak,
-                                decoration: BoxDecoration(
-                                  color: AppColors.ok,
-                                  borderRadius: BorderRadius.vertical(top: Radius.circular(b.helped > 0 ? 0 : 6)),
-                                ),
-                              ),
-                            const SizedBox(height: 6),
-                            Text(_days[b.day.weekday - 1], style: AppText.caption, softWrap: false, overflow: TextOverflow.visible),
-                          ],
-                        ),
+                  for (final (value, y) in [(ceiling, 0.0), (ceiling ~/ 2, plot / 2)])
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      top: 140 - 24 - plot + y - 8,
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 28,
+                            child: Text('$value', style: AppText.caption.copyWith(fontSize: 12, color: p.subInk)),
+                          ),
+                          Expanded(child: Container(height: 1, color: p.line)),
+                        ],
                       ),
                     ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 28),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        for (final (i, b) in bars.indexed)
+                          Expanded(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: dense ? 1.5 : 5),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  if (b.helped > 0)
+                                    Container(
+                                      height: plot * b.helped / ceiling,
+                                      decoration: const BoxDecoration(
+                                        color: Thread.kunyit,
+                                        borderRadius: BorderRadius.vertical(top: Radius.circular(3)),
+                                      ),
+                                    ),
+                                  if (b.alone > 0)
+                                    Container(
+                                      height: plot * b.alone / ceiling,
+                                      decoration: BoxDecoration(
+                                        color: p.ok,
+                                        borderRadius: BorderRadius.vertical(top: Radius.circular(b.helped > 0 ? 0 : 3)),
+                                      ),
+                                    ),
+                                  const SizedBox(height: 6),
+                                  SizedBox(
+                                    height: 18,
+                                    child: !dense
+                                        ? Text(_days[b.day.weekday - 1], style: AppText.caption, softWrap: false, overflow: TextOverflow.visible)
+                                        : (i % 7 == bars.length % 7 || i == bars.length - 1)
+                                        ? Text(
+                                            '${b.day.day}',
+                                            style: AppText.caption.copyWith(fontSize: 12),
+                                            softWrap: false,
+                                            overflow: TextOverflow.visible,
+                                          )
+                                        : null,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
       ),
@@ -424,15 +633,17 @@ class SessionHistoryScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Riwayat sesi')),
       body: sessions.when(
-        loading: () => const Center(child: CircularProgressIndicator(color: AppColors.ink)),
+        loading: () => const Center(child: CircularProgressIndicator()),
         error: (_, _) => const Center(child: MessageState(title: 'Riwayat belum bisa dimuat')),
         data: (list) => list.isEmpty
-            ? const Center(child: MessageState(title: 'Belum ada sesi', body: 'Riwayat muncul setelah anak mulai berlatih.'))
-            : ListView.separated(
-                padding: const EdgeInsets.all(AppSpace.gutter),
-                itemCount: list.length,
-                separatorBuilder: (_, _) => const SizedBox(height: 8),
-                itemBuilder: (_, i) => _SessionTile(session: list[i]),
+            ? const Center(
+                child: MessageState(title: 'Belum ada sesi', body: 'Riwayat muncul setelah anak mulai berlatih.', motif: Motif.lurik),
+              )
+            : PaneList(
+                maxWidth: 760,
+                children: [
+                  for (final s in list) ...[_SessionTile(session: s), const SizedBox(height: 8)],
+                ],
               ),
       ),
     );
@@ -444,34 +655,51 @@ class _SessionTile extends ConsumerWidget {
 
   final PracticeSession session;
 
+  static String kindLabel(String kind) => switch (kind) {
+    'letters' => 'Beda Huruf',
+    'build' => 'Susun Kata',
+    'listen' => 'Dengar dan Pilih',
+    _ => 'Baca Kata',
+  };
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final p = Pal.of(context);
     final t = session.startedAt;
-    final kind = session.kind == 'letters' ? 'Beda Huruf' : 'Baca Kata';
     final status = session.endedAt == null ? 'belum selesai' : 'level ${session.startLevel} ke ${session.endLevel ?? session.startLevel}';
     return Material(
-      color: AppColors.surface,
+      color: p.surface,
       borderRadius: BorderRadius.circular(AppSpace.tileRadius),
       clipBehavior: Clip.antiAlias,
       child: ExpansionTile(
         shape: const Border(),
-        title: Text('$kind, ${t.day}/${t.month}/${t.year}', style: AppText.bodyStrong),
-        subtitle: Text(status, style: AppText.caption),
+        leading: Container(
+          width: 8,
+          height: 36,
+          decoration: BoxDecoration(color: Thread.forKind(session.kind), borderRadius: BorderRadius.circular(2)),
+        ),
+        title: Text('${kindLabel(session.kind)}, ${t.day}/${t.month}/${t.year}', style: AppText.bodyStrong),
+        subtitle: Text(status, style: AppText.caption.copyWith(color: p.subInk)),
         children: [
           StreamBuilder<List<Attempt>>(
             stream: ref.watch(repositoryProvider).watchSessionAttempts(session.id),
             builder: (context, snap) {
               final attempts = snap.data ?? const <Attempt>[];
               if (attempts.isEmpty) {
-                return Padding(padding: const EdgeInsets.all(16), child: Text('Belum ada percobaan.', style: AppText.bodyGuardian));
+                return Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text('Belum ada percobaan.', style: AppText.bodyGuardian),
+                );
               }
               final content = ref.read(contentProvider);
+              String name(String id) =>
+                  content.wordById(id)?.text ?? content.letters.where((q) => q.id == id).map((q) => 'Huruf ${q.target}').firstOrNull ?? id;
               return Column(
                 children: [
                   for (final a in attempts)
                     ListTile(
                       dense: true,
-                      title: Text(content.wordById(a.wordId)?.text ?? a.wordId, style: AppText.bodyGuardian),
+                      title: Text(name(a.wordId), style: AppText.bodyGuardian),
                       trailing: Text(_statusLabel(a), style: AppText.caption),
                     ),
                 ],
@@ -491,5 +719,52 @@ class _SessionTile extends ConsumerWidget {
       AttemptStatus.wrong => 'Belum tepat',
       AttemptStatus.unclear => 'Tidak terdengar',
     };
+  }
+}
+
+/// Semua kata yang pernah dilatih di Baca Kata, dengan angka dari log percobaan.
+class WordStatsScreen extends ConsumerWidget {
+  const WordStatsScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final attempts = ref.watch(attemptsProvider).value ?? const [];
+    final s = ChildSummary(attempts, ref.watch(sessionsProvider).value ?? const [], ref.watch(contentProvider), DateTime.now());
+    final stats = wordStats(s.wordAttempts, ref.watch(contentProvider));
+    final p = Pal.of(context);
+    return Scaffold(
+      appBar: AppBar(title: const Text('Semua kata')),
+      body: stats.isEmpty
+          ? const Center(
+              child: MessageState(title: 'Belum ada kata', body: 'Daftar muncul setelah anak berlatih Baca Kata.', motif: Motif.ceplok),
+            )
+          : PaneList(
+              maxWidth: 760,
+              children: [
+                Text('Diurutkan dari yang paling sering dilatih. Sentuh kata untuk detail.', style: AppText.bodyGuardian.copyWith(color: p.subInk)),
+                const SizedBox(height: 12),
+                Panel(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Column(
+                    children: [
+                      for (final (i, w) in stats.indexed) ...[
+                        if (i > 0) const Divider(indent: 16, endIndent: 16),
+                        ListTile(
+                          minTileHeight: AppSpace.tapChild,
+                          title: Text(w.word.text, style: AppText.bodyStrong),
+                          subtitle: Text(
+                            '${w.tries} percobaan · benar sendiri ${w.alone} dari ${w.counted}',
+                            style: AppText.caption.copyWith(color: p.subInk),
+                          ),
+                          trailing: const Icon(Icons.chevron_right_rounded),
+                          onTap: () => showWordDetail(context, ref, w),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
+            ),
+    );
   }
 }

@@ -42,3 +42,16 @@ Folder ini sumber kebenaran untuk rombak aplikasi. Kode belum diubah. Implementa
 | 5 Area Pendamping | Selesai, tampilan belum diperiksa di perangkat |
 | 6 dan 7 Backend dan sinkron | Kode dan skema SQL selesai, diuji dengan server tiruan. Belum dijalankan pada Supabase sungguhan |
 | 8 Finalisasi | Belum. APK masih ditandatangani kunci debug |
+
+## Rombak UI Tenun Kata (26 November 2026)
+
+| Bagian | Status |
+|---|---|
+| Dunia visual | Tenun Kata: benang kunyit, tarum muda, daun, jingga, dan laut, dengan kesumba khusus untuk keadaan aktif. Token di `lib/core/design/tokens.dart` |
+| Responsif | Navigasi bar bawah di ponsel dan rail di lipat atau tablet. Layar terbagi dua di tablet dan saat landscape. Diuji di 320, 390, 844 landscape, 800, dan 1280 |
+| Tema | Terang, gelap, atau ikut sistem, diatur di Area Pendamping |
+| Fitur baru anak | Susun Kata, Dengar dan Pilih, Beda Huruf 12 soal (6 per sesi), Kamus Kataku, karaoke dan ketuk kata di cerita, 3 cerita baru, Kain-ku dan stiker motif, avatar motif |
+| Fitur baru pendamping | Keypad PIN, ganti anak, grafik 7 dan 30 hari, Semua kata dengan detail per kata, warna latar bacaan, jarak huruf |
+| Belum | Pengingat latihan harian (butuh plugin notifikasi dan uji di perangkat), uji di HP dan tablet sungguhan |
+
+Statistik: Susun Kata dan Dengar dan Pilih dicatat terpisah. Keduanya tidak menguji ucapan, jadi tidak ikut ketepatan membaca.

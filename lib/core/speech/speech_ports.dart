@@ -17,7 +17,8 @@ abstract interface class SpeechRecognizer {
 }
 
 abstract interface class Speaker {
-  Future<void> speak(String text, {double rate});
+  /// [onWord] menerima posisi kata yang sedang diucapkan dalam [text], bila mesin suara melaporkannya.
+  Future<void> speak(String text, {double rate, void Function(int start, int end)? onWord});
   Future<void> stop();
 }
 
@@ -91,13 +92,16 @@ class DeviceSpeaker implements Speaker {
   DeviceSpeaker() {
     _tts.setLanguage('id-ID').catchError((_) => null);
     _tts.awaitSpeakCompletion(true).catchError((_) => null);
+    _tts.setProgressHandler((_, start, end, _) => _onWord?.call(start, end));
   }
 
   final _tts = FlutterTts();
+  void Function(int start, int end)? _onWord;
 
   @override
-  Future<void> speak(String text, {double rate = 0.4}) async {
+  Future<void> speak(String text, {double rate = 0.4, void Function(int start, int end)? onWord}) async {
     try {
+      _onWord = onWord;
       await _tts.setSpeechRate(rate);
       await _tts.speak(text);
     } catch (_) {

@@ -11,6 +11,9 @@ class ChildSettings {
     this.raiseAfter = 3,
     this.lowerAfter = 2,
     this.guided = false,
+    this.theme = 'system',
+    this.tint = 'none',
+    this.letterSpacing = 0,
   });
 
   final double fontScale;
@@ -25,6 +28,15 @@ class ChildSettings {
   /// Mode pendampingan: menampilkan tombol "Sudah benar" saat latihan.
   final bool guided;
 
+  /// 'system', 'light', atau 'dark'.
+  final String theme;
+
+  /// Nama ReadingTint untuk latar bacaan cerita.
+  final String tint;
+
+  /// Tambahan jarak huruf pada bacaan, dalam piksel logis.
+  final double letterSpacing;
+
   ChildSettings copyWith({
     double? fontScale,
     double? speechRate,
@@ -35,6 +47,9 @@ class ChildSettings {
     int? raiseAfter,
     int? lowerAfter,
     bool? guided,
+    String? theme,
+    String? tint,
+    double? letterSpacing,
   }) =>
       ChildSettings(
         fontScale: fontScale ?? this.fontScale,
@@ -46,6 +61,9 @@ class ChildSettings {
         raiseAfter: raiseAfter ?? this.raiseAfter,
         lowerAfter: lowerAfter ?? this.lowerAfter,
         guided: guided ?? this.guided,
+        theme: theme ?? this.theme,
+        tint: tint ?? this.tint,
+        letterSpacing: letterSpacing ?? this.letterSpacing,
       );
 
   String encode() => jsonEncode({
@@ -58,6 +76,9 @@ class ChildSettings {
         'raiseAfter': raiseAfter,
         'lowerAfter': lowerAfter,
         'guided': guided,
+        'theme': theme,
+        'tint': tint,
+        'letterSpacing': letterSpacing,
       });
 
   factory ChildSettings.decode(String raw) {
@@ -72,6 +93,9 @@ class ChildSettings {
       raiseAfter: j['raiseAfter'] as int? ?? 3,
       lowerAfter: j['lowerAfter'] as int? ?? 2,
       guided: j['guided'] as bool? ?? false,
+      theme: j['theme'] as String? ?? 'system',
+      tint: j['tint'] as String? ?? 'none',
+      letterSpacing: (j['letterSpacing'] as num?)?.toDouble() ?? 0,
     );
   }
 }

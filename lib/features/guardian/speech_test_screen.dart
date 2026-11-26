@@ -61,7 +61,7 @@ class _SpeechTestScreenState extends ConsumerState<SpeechTestScreen> {
             children: [
               Text('Status: ${_availability?.name ?? 'memeriksa'}. Suara tidak disimpan.', style: AppText.bodyGuardian),
               const SizedBox(height: 12),
-              CardBox(
+              Panel(
                 child: Column(
                   children: [
                     Text('${_index + 1} dari ${words.length}', style: AppText.caption),

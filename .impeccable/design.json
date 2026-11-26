@@ -1,0 +1,913 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-26T00:00:00Z",
+  "title": "Design System: Lentera",
+  "extensions": {
+    "colorMeta": {
+      "kunyit": {
+        "role": "primary",
+        "displayName": "Kunyit",
+        "canonical": "#F2B233",
+        "tonalRamp": [
+          "#483105",
+          "#7D5608",
+          "#B17A0B",
+          "#E69E0F",
+          "#F2B53A",
+          "#F6C96F",
+          "#FADEA9",
+          "#FDF6E7"
+        ]
+      },
+      "tarum-muda": {
+        "role": "secondary",
+        "displayName": "Tarum Muda",
+        "canonical": "#5B8DEF",
+        "tonalRamp": [
+          "#071C46",
+          "#0C3179",
+          "#1145AC",
+          "#165ADF",
+          "#407BEC",
+          "#749EF1",
+          "#ABC5F7",
+          "#E8EFFD"
+        ]
+      },
+      "daun": {
+        "role": "secondary",
+        "displayName": "Daun",
+        "canonical": "#45B07E",
+        "tonalRamp": [
+          "#163727",
+          "#255F44",
+          "#358861",
+          "#45B07E",
+          "#69C499",
+          "#91D4B5",
+          "#BDE5D2",
+          "#EDF8F3"
+        ]
+      },
+      "jingga": {
+        "role": "secondary",
+        "displayName": "Jingga",
+        "canonical": "#F39552",
+        "tonalRamp": [
+          "#482105",
+          "#7C3909",
+          "#B0510C",
+          "#E56910",
+          "#F1873B",
+          "#F5A770",
+          "#F9CAA9",
+          "#FDF0E7"
+        ]
+      },
+      "laut": {
+        "role": "secondary",
+        "displayName": "Laut",
+        "canonical": "#4FB8C6",
+        "tonalRamp": [
+          "#13353A",
+          "#205C64",
+          "#2E838F",
+          "#3CAAB9",
+          "#61BFCC",
+          "#8BD0DA",
+          "#BAE3E9",
+          "#ECF7F9"
+        ]
+      },
+      "kesumba": {
+        "role": "tertiary",
+        "displayName": "Kesumba",
+        "canonical": "#F07A98",
+        "tonalRamp": [
+          "#450817",
+          "#770D28",
+          "#AA1339",
+          "#DC194A",
+          "#EA436D",
+          "#EF7695",
+          "#F6ADBF",
+          "#FCE8ED"
+        ]
+      },
+      "tarum": {
+        "role": "primary",
+        "displayName": "Tarum",
+        "canonical": "#1E2A5E",
+        "tonalRamp": [
+          "#131A3A",
+          "#202D65",
+          "#2E408F",
+          "#3B53BA",
+          "#6075CC",
+          "#8B9ADA",
+          "#B9C2E9",
+          "#ECEEF9"
+        ]
+      },
+      "on-thread": {
+        "role": "neutral",
+        "displayName": "On Thread",
+        "canonical": "#0F1430",
+        "tonalRamp": [
+          "#12183A",
+          "#202A65",
+          "#2D3C90",
+          "#3A4EBB",
+          "#6070CD",
+          "#8A97DB",
+          "#B9C0E9",
+          "#ECEEF9"
+        ]
+      },
+      "ground": {
+        "role": "neutral",
+        "displayName": "Ground",
+        "canonical": "#EEF1F8",
+        "tonalRamp": [
+          "#162036",
+          "#27375E",
+          "#374F86",
+          "#4766AD",
+          "#6B85C2",
+          "#93A6D2",
+          "#BEC9E4",
+          "#EDF0F8"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Surface",
+        "canonical": "#FFFFFF",
+        "tonalRamp": [
+          "#262626",
+          "#424242",
+          "#5E5E5E",
+          "#7A7A7A",
+          "#969696",
+          "#B2B2B2",
+          "#D1D1D1",
+          "#F2F2F2"
+        ]
+      },
+      "surface-alt": {
+        "role": "neutral",
+        "displayName": "Surface Alt",
+        "canonical": "#E1E6F2",
+        "tonalRamp": [
+          "#172035",
+          "#28385D",
+          "#394F84",
+          "#4A66AB",
+          "#6D85C0",
+          "#94A6D1",
+          "#BFCAE3",
+          "#EDF0F7"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#0F1430",
+        "tonalRamp": [
+          "#12183A",
+          "#202A65",
+          "#2D3C90",
+          "#3A4EBB",
+          "#6070CD",
+          "#8A97DB",
+          "#B9C0E9",
+          "#ECEEF9"
+        ]
+      },
+      "sub-ink": {
+        "role": "neutral",
+        "displayName": "Sub Ink",
+        "canonical": "#3C4466",
+        "tonalRamp": [
+          "#1C2030",
+          "#313853",
+          "#464F77",
+          "#5B679A",
+          "#7B86B2",
+          "#9FA6C6",
+          "#C5CADD",
+          "#EFF0F6"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Line",
+        "canonical": "#CBD2E4",
+        "tonalRamp": [
+          "#1A2132",
+          "#2D3957",
+          "#40517C",
+          "#5469A1",
+          "#7588B8",
+          "#9AA8CB",
+          "#C3CBE0",
+          "#EEF0F6"
+        ]
+      },
+      "empty": {
+        "role": "neutral",
+        "displayName": "Empty",
+        "canonical": "#D3D9EA",
+        "tonalRamp": [
+          "#192034",
+          "#2B375A",
+          "#3D4E80",
+          "#4F66A6",
+          "#7185BB",
+          "#97A6CE",
+          "#C1C9E1",
+          "#EEF0F7"
+        ]
+      },
+      "ok": {
+        "role": "neutral",
+        "displayName": "Ok",
+        "canonical": "#0F6B45",
+        "tonalRamp": [
+          "#09432B",
+          "#10744B",
+          "#17A56B",
+          "#1ED78A",
+          "#48E5A4",
+          "#79ECBD",
+          "#AEF4D7",
+          "#E9FCF4"
+        ]
+      },
+      "ok-soft": {
+        "role": "neutral",
+        "displayName": "Ok Soft",
+        "canonical": "#D5F2E2",
+        "tonalRamp": [
+          "#123A24",
+          "#1F653F",
+          "#2D9059",
+          "#3ABB74",
+          "#5FCE91",
+          "#8ADBAE",
+          "#B9E9CF",
+          "#ECF9F2"
+        ]
+      },
+      "retry": {
+        "role": "neutral",
+        "displayName": "Retry",
+        "canonical": "#7A5600",
+        "tonalRamp": [
+          "#4C3600",
+          "#855D00",
+          "#BD8500",
+          "#F5AD00",
+          "#FFC12E",
+          "#FFD266",
+          "#FFE4A3",
+          "#FFF7E5"
+        ]
+      },
+      "retry-soft": {
+        "role": "neutral",
+        "displayName": "Retry Soft",
+        "canonical": "#FFEFC2",
+        "tonalRamp": [
+          "#4C3800",
+          "#856200",
+          "#BD8B00",
+          "#F5B500",
+          "#FFC82E",
+          "#FFD766",
+          "#FFE7A3",
+          "#FFF8E5"
+        ]
+      },
+      "letter-b": {
+        "role": "neutral",
+        "displayName": "Letter B",
+        "canonical": "#1D4FA8",
+        "tonalRamp": [
+          "#0B1F41",
+          "#143571",
+          "#1C4CA1",
+          "#2462D1",
+          "#4D82E0",
+          "#7DA3E8",
+          "#B1C8F1",
+          "#E9F0FB"
+        ]
+      },
+      "letter-d": {
+        "role": "neutral",
+        "displayName": "Letter D",
+        "canonical": "#A4470A",
+        "tonalRamp": [
+          "#481F04",
+          "#7D3608",
+          "#B24D0B",
+          "#E7640E",
+          "#F3833A",
+          "#F6A46F",
+          "#FAC9A8",
+          "#FEF0E7"
+        ]
+      },
+      "letter-b-on-thread": {
+        "role": "neutral",
+        "displayName": "Letter B On Thread",
+        "canonical": "#1D3F8F",
+        "tonalRamp": [
+          "#0D1C40",
+          "#16316E",
+          "#20459D",
+          "#295ACC",
+          "#517ADC",
+          "#809EE5",
+          "#B3C5F0",
+          "#EAEFFB"
+        ]
+      },
+      "letter-d-on-thread": {
+        "role": "neutral",
+        "displayName": "Letter D On Thread",
+        "canonical": "#8A3A08",
+        "tonalRamp": [
+          "#481E04",
+          "#7D3507",
+          "#B24B0A",
+          "#E7610D",
+          "#F48139",
+          "#F7A36E",
+          "#FAC8A8",
+          "#FEF0E7"
+        ]
+      },
+      "ground-dark": {
+        "role": "neutral",
+        "displayName": "Ground Dark",
+        "canonical": "#0F1430",
+        "tonalRamp": [
+          "#12183A",
+          "#202A65",
+          "#2D3C90",
+          "#3A4EBB",
+          "#6070CD",
+          "#8A97DB",
+          "#B9C0E9",
+          "#ECEEF9"
+        ]
+      },
+      "surface-dark": {
+        "role": "neutral",
+        "displayName": "Surface Dark",
+        "canonical": "#1A2147",
+        "tonalRamp": [
+          "#151A38",
+          "#242D61",
+          "#33408A",
+          "#4253B3",
+          "#6675C7",
+          "#8F9AD6",
+          "#BCC2E6",
+          "#ECEEF8"
+        ]
+      },
+      "surface-alt-dark": {
+        "role": "neutral",
+        "displayName": "Surface Alt Dark",
+        "canonical": "#252D5A",
+        "tonalRamp": [
+          "#161B36",
+          "#272F5E",
+          "#374386",
+          "#4757AD",
+          "#6B78C2",
+          "#939CD2",
+          "#BEC4E4",
+          "#EDEFF8"
+        ]
+      },
+      "ink-dark": {
+        "role": "neutral",
+        "displayName": "Ink Dark",
+        "canonical": "#F1F3FA",
+        "tonalRamp": [
+          "#141C38",
+          "#233162",
+          "#32468B",
+          "#405AB4",
+          "#657BC8",
+          "#8E9ED7",
+          "#BBC5E7",
+          "#ECEFF8"
+        ]
+      },
+      "sub-ink-dark": {
+        "role": "neutral",
+        "displayName": "Sub Ink Dark",
+        "canonical": "#B9BFDA",
+        "tonalRamp": [
+          "#1A1F32",
+          "#2E3557",
+          "#414C7B",
+          "#5562A0",
+          "#7682B7",
+          "#9BA3CA",
+          "#C3C8DF",
+          "#EEF0F6"
+        ]
+      },
+      "line-dark": {
+        "role": "neutral",
+        "displayName": "Line Dark",
+        "canonical": "#39427A",
+        "tonalRamp": [
+          "#181C34",
+          "#2A315A",
+          "#3C4681",
+          "#4E5AA7",
+          "#707BBC",
+          "#979ECE",
+          "#C0C5E2",
+          "#EEEFF7"
+        ]
+      },
+      "empty-dark": {
+        "role": "neutral",
+        "displayName": "Empty Dark",
+        "canonical": "#2E3768",
+        "tonalRamp": [
+          "#171C35",
+          "#29315C",
+          "#3A4583",
+          "#4B5AAA",
+          "#6E7BBF",
+          "#959ED0",
+          "#BFC5E3",
+          "#EDEFF7"
+        ]
+      },
+      "ok-dark": {
+        "role": "neutral",
+        "displayName": "Ok Dark",
+        "canonical": "#6FD9A3",
+        "tonalRamp": [
+          "#103D26",
+          "#1C6942",
+          "#27955D",
+          "#33C279",
+          "#5AD395",
+          "#86DFB2",
+          "#B6ECD1",
+          "#EBFAF2"
+        ]
+      },
+      "ok-soft-dark": {
+        "role": "neutral",
+        "displayName": "Ok Soft Dark",
+        "canonical": "#173F35",
+        "tonalRamp": [
+          "#14382F",
+          "#236152",
+          "#328A74",
+          "#41B397",
+          "#66C7AF",
+          "#8FD6C4",
+          "#BCE6DC",
+          "#ECF8F5"
+        ]
+      },
+      "retry-dark": {
+        "role": "neutral",
+        "displayName": "Retry Dark",
+        "canonical": "#F2C062",
+        "tonalRamp": [
+          "#473006",
+          "#7A530A",
+          "#AE770E",
+          "#E29A13",
+          "#EFB23E",
+          "#F3C672",
+          "#F8DDAA",
+          "#FDF6E7"
+        ]
+      },
+      "retry-soft-dark": {
+        "role": "neutral",
+        "displayName": "Retry Soft Dark",
+        "canonical": "#3D3420",
+        "tonalRamp": [
+          "#322B1A",
+          "#574A2E",
+          "#7C6A41",
+          "#A18954",
+          "#B7A376",
+          "#CABC9B",
+          "#DFD7C3",
+          "#F6F4EE"
+        ]
+      },
+      "letter-b-dark": {
+        "role": "neutral",
+        "displayName": "Letter B Dark",
+        "canonical": "#9DBBFF",
+        "tonalRamp": [
+          "#00174C",
+          "#002985",
+          "#003ABD",
+          "#004BF5",
+          "#2E6EFF",
+          "#6695FF",
+          "#A3BFFF",
+          "#E5EDFF"
+        ]
+      },
+      "letter-d-dark": {
+        "role": "neutral",
+        "displayName": "Letter D Dark",
+        "canonical": "#FFAE73",
+        "tonalRamp": [
+          "#4C2000",
+          "#853800",
+          "#BD5000",
+          "#F56700",
+          "#FF862E",
+          "#FFA666",
+          "#FFCAA3",
+          "#FFF0E5"
+        ]
+      },
+      "tint-kuning": {
+        "role": "neutral",
+        "displayName": "Tint Kuning",
+        "canonical": "#FFF3C4",
+        "tonalRamp": [
+          "#4C3D00",
+          "#856A00",
+          "#BD9600",
+          "#F5C300",
+          "#FFD42E",
+          "#FFE066",
+          "#FFECA3",
+          "#FFFAE5"
+        ]
+      },
+      "tint-kuning-dark": {
+        "role": "neutral",
+        "displayName": "Tint Kuning Dark",
+        "canonical": "#3A3416",
+        "tonalRamp": [
+          "#373215",
+          "#605624",
+          "#897B34",
+          "#B19F43",
+          "#C5B667",
+          "#D5C990",
+          "#E6DFBC",
+          "#F8F6ED"
+        ]
+      },
+      "tint-biru": {
+        "role": "neutral",
+        "displayName": "Tint Biru",
+        "canonical": "#DCEBFF",
+        "tonalRamp": [
+          "#00214C",
+          "#003985",
+          "#0051BD",
+          "#0069F5",
+          "#2E88FF",
+          "#66A8FF",
+          "#A3CBFF",
+          "#E5F0FF"
+        ]
+      },
+      "tint-biru-dark": {
+        "role": "neutral",
+        "displayName": "Tint Biru Dark",
+        "canonical": "#1C2D4D",
+        "tonalRamp": [
+          "#142138",
+          "#233961",
+          "#32518A",
+          "#4169B4",
+          "#6688C7",
+          "#8FA8D6",
+          "#BCCBE7",
+          "#ECF0F8"
+        ]
+      },
+      "tint-hijau": {
+        "role": "neutral",
+        "displayName": "Tint Hijau",
+        "canonical": "#DDF5E6",
+        "tonalRamp": [
+          "#113B21",
+          "#1E6639",
+          "#2B9251",
+          "#38BD6A",
+          "#5DCF88",
+          "#89DCA8",
+          "#B8EACB",
+          "#EBF9F1"
+        ]
+      },
+      "tint-hijau-dark": {
+        "role": "neutral",
+        "displayName": "Tint Hijau Dark",
+        "canonical": "#173A2A",
+        "tonalRamp": [
+          "#163728",
+          "#265F45",
+          "#368762",
+          "#46AF7F",
+          "#69C49A",
+          "#91D4B5",
+          "#BDE5D3",
+          "#EDF8F3"
+        ]
+      },
+      "tint-merah-muda": {
+        "role": "neutral",
+        "displayName": "Tint Merah Muda",
+        "canonical": "#FFE3EC",
+        "tonalRamp": [
+          "#4C0019",
+          "#85002B",
+          "#BD003D",
+          "#F5004F",
+          "#FF2E71",
+          "#FF6697",
+          "#FFA3C1",
+          "#FFE5EE"
+        ]
+      },
+      "tint-merah-muda-dark": {
+        "role": "neutral",
+        "displayName": "Tint Merah Muda Dark",
+        "canonical": "#45222F",
+        "tonalRamp": [
+          "#331923",
+          "#592C3D",
+          "#7E3E56",
+          "#A45170",
+          "#BA738D",
+          "#CC99AC",
+          "#E1C2CD",
+          "#F7EEF1"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "word-hero": {
+        "displayName": "Word Hero",
+        "purpose": "Kata target; diskalakan per konteks dalam FittedBox."
+      },
+      "syllable": {
+        "displayName": "Syllable",
+        "purpose": "Suku kata di ubin."
+      },
+      "display": {
+        "displayName": "Display",
+        "purpose": "Judul panel utama Beranda."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Judul layar dan angka PIN."
+      },
+      "heading": {
+        "displayName": "Heading",
+        "purpose": "Judul bagian, app bar, dialog."
+      },
+      "reading": {
+        "displayName": "Reading",
+        "purpose": "Teks cerita di bidang polos, dua tinta."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Teks anak."
+      },
+      "body-strong": {
+        "displayName": "Body Strong",
+        "purpose": "Label tombol dan status."
+      },
+      "body-guardian": {
+        "displayName": "Body Guardian",
+        "purpose": "Teks Area Pendamping."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Tombol teks dan segmen."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Label navigasi, hari, keterangan."
+      },
+      "metric": {
+        "displayName": "Metric",
+        "purpose": "Angka ringkasan pendamping."
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "quick",
+        "value": "160ms",
+        "purpose": "Perubahan keadaan ubin, sorot kata, titik PIN."
+      },
+      {
+        "name": "panel",
+        "value": "240ms",
+        "purpose": "Transisi panel."
+      },
+      {
+        "name": "weave",
+        "value": "420ms",
+        "purpose": "Benang ditenun masuk ke slot pita sesi dari kiri."
+      },
+      {
+        "name": "ease",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Kurva tunggal untuk semua gerak; nol durasi saat kurangi gerakan aktif."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "compact",
+        "value": "0px"
+      },
+      {
+        "name": "medium",
+        "value": "600px"
+      },
+      {
+        "name": "expanded",
+        "value": "840px"
+      },
+      {
+        "name": "short-landscape",
+        "value": "width > height and height < 560px"
+      }
+    ],
+    "contrast": {
+      "on-thread/kunyit": 9.62,
+      "on-thread/tarum-muda": 5.59,
+      "on-thread/daun": 6.68,
+      "on-thread/jingga": 7.94,
+      "on-thread/laut": 7.74,
+      "on-thread/kesumba": 6.83,
+      "ink/ground": 15.97,
+      "ink-dark/ground-dark": 16.29,
+      "white/tarum": 13.57
+    }
+  },
+  "components": [
+    {
+      "name": "Primary Action",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Satu aksi utama per layar, lebar penuh, tinggi 60. Tarum di terang, kunyit di gelap.",
+      "html": "<button class=\"ds-btn-primary\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M8 5v14l11-7z\"/></svg>Mulai Baca</button>",
+      "css": ".ds-btn-primary{font-family: Lexend, sans-serif;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:60px;background:#1E2A5E;color:#FFFFFF;border:none;border-radius:14px;font-size:18px;font-weight:600;line-height:1.45;cursor:pointer;transition:background 160ms cubic-bezier(0.16,1,0.3,1)}.ds-btn-primary:hover{background:#26346F}.ds-btn-primary:active{background:#18224D}.ds-btn-primary:focus-visible{outline:2px solid #0F1430;outline-offset:3px}"
+    },
+    {
+      "name": "Quiet Action",
+      "kind": "button",
+      "refersTo": "button-quiet",
+      "description": "Aksi kedua: permukaan dengan garis tipis, tinggi 56.",
+      "html": "<button class=\"ds-btn-quiet\">Pilih kata lain</button>",
+      "css": ".ds-btn-quiet{font-family: Lexend, sans-serif;width:100%;min-height:56px;background:#FFFFFF;color:#0F1430;border:1px solid #CBD2E4;border-radius:14px;font-size:18px;font-weight:600;cursor:pointer;transition:background 160ms}.ds-btn-quiet:hover{background:#E1E6F2}.ds-btn-quiet:focus-visible{outline:2px solid #0F1430;outline-offset:3px}"
+    },
+    {
+      "name": "Panel Baca dengan Pinggir Kain",
+      "kind": "card",
+      "refersTo": "panel-thread",
+      "description": "Panel kunyit bersudut 16 dengan pinggir kain lurik di atas, pita sesi, dan tombol tarum.",
+      "html": "<div class=\"ds-panel-thread\"><div class=\"ds-selvedge\"></div><div class=\"ds-panel-body\"><div class=\"ds-display\">Baca 6 kata hari ini</div><p class=\"ds-body\">Setiap kata menenun satu benang.</p><div class=\"ds-slots\"><span class=\"ds-slot on\"></span><span class=\"ds-slot on\"></span><span class=\"ds-slot active\"></span><span class=\"ds-slot\"></span><span class=\"ds-slot\"></span><span class=\"ds-slot\"></span></div><button class=\"ds-btn-on-thread\">Mulai Baca</button></div></div>",
+      "css": ".ds-panel-thread{font-family: Lexend, sans-serif;background:#F2B233;color:#0F1430;border-radius:16px;overflow:hidden;max-width:360px}.ds-selvedge{height:10px;background:linear-gradient(90deg,#1E2A5E 0 17.5px,#0F1430 17.5px 22.5px,#45B07E 22.5px 30px,#0F1430 30px 35px,#1E2A5E 35px 65px,#5B8DEF 65px 70px,#F39552 70px 80px,#0F1430 80px 85px,#1E2A5E 85px 92.5px,#4FB8C6 92.5px 107.5px);background-size:107.5px 10px}.ds-panel-body{padding:20px}.ds-display{font-size:40px;font-weight:700;line-height:1.1;letter-spacing:-0.6px}.ds-body{font-size:18px;line-height:1.45;margin:8px 0 16px}.ds-slots{display:flex;gap:4px;margin-bottom:16px}.ds-slot{flex:1;height:14px;border-radius:3px;background:rgba(15,20,48,0.18)}.ds-slot.on{background:repeating-linear-gradient(90deg,#D9A02E 0 6px,#F2B233 6px 12px)}.ds-slot.active{outline:2.5px solid #F07A98;outline-offset:-2.5px}.ds-btn-on-thread{font-family: Lexend, sans-serif;width:100%;min-height:60px;background:#1E2A5E;color:#FFFFFF;border:none;border-radius:14px;font-size:18px;font-weight:600;cursor:pointer}.ds-btn-on-thread:focus-visible{outline:2px solid #0F1430;outline-offset:3px}"
+    },
+    {
+      "name": "Ubin Suku Kata",
+      "kind": "custom",
+      "refersTo": "syllable-tile",
+      "description": "Ubin 84 bersudut 12: diam, aktif (kesumba), tepat (ok), coba lagi (retry, tanpa merah).",
+      "html": "<div class=\"ds-tiles\"><button class=\"ds-tile\"><span class=\"b\">B</span>I</button><button class=\"ds-tile active\">KU</button><button class=\"ds-tile ok\">BU</button><button class=\"ds-tile retry\">DU</button></div>",
+      "css": ".ds-tiles{display:flex;gap:12px;flex-wrap:wrap}.ds-tile{font-family: Lexend, sans-serif;min-width:84px;min-height:84px;padding:8px 14px;border-radius:12px;background:#FFFFFF;color:#0F1430;border:1.5px solid #CBD2E4;font-size:34px;font-weight:700;letter-spacing:1.4px;cursor:pointer;transition:background 160ms cubic-bezier(0.16,1,0.3,1)}.ds-tile .b{color:#1D4FA8}.ds-tile.active{background:#F07A98;color:#0F1430;border-color:transparent}.ds-tile.ok{background:#D5F2E2;color:#0F6B45;border-color:transparent}.ds-tile.retry{background:#FFEFC2;color:#7A5600;border-color:transparent}.ds-tile:focus-visible{outline:2px solid #0F1430;outline-offset:3px}"
+    },
+    {
+      "name": "Kain Minggu",
+      "kind": "custom",
+      "refersTo": "week-column",
+      "description": "Tujuh kolom bertinggi tetap (9 baris di Beranda); hari ini bergaris tinta.",
+      "html": "<div class=\"ds-week\"><div class=\"ds-day\"><div class=\"ds-col\"><i style=\"background:#F2B233\"></i><i style=\"background:#5B8DEF\"></i></div><span>Sen</span></div><div class=\"ds-day\"><div class=\"ds-col\"></div><span>Sel</span></div><div class=\"ds-day\"><div class=\"ds-col\"><i style=\"background:#45B07E\"></i></div><span>Rab</span></div><div class=\"ds-day today\"><div class=\"ds-col\"><i style=\"background:#F2B233\"></i><i style=\"background:#F2B233\"></i><i style=\"background:#F2B233\"></i><i style=\"background:#F2B233\"></i><i style=\"background:#F2B233\"></i></div><span>Kam</span></div><div class=\"ds-day\"><div class=\"ds-col\"></div><span>Jum</span></div><div class=\"ds-day\"><div class=\"ds-col\"></div><span>Sab</span></div><div class=\"ds-day\"><div class=\"ds-col\"></div><span>Min</span></div></div>",
+      "css": ".ds-week{font-family: Lexend, sans-serif;display:flex;gap:8px;max-width:360px}.ds-day{flex:1;text-align:center;font-size:14px;font-weight:500;color:#3C4466}.ds-day.today{color:#0F1430;font-weight:700}.ds-col{height:120px;padding:4px;border-radius:6px;background:#E1E6F2;display:flex;flex-direction:column-reverse;gap:2px;margin-bottom:6px;box-sizing:border-box}.ds-day.today .ds-col{border:2px solid #0F1430}.ds-col i{display:block;height:7px}"
+    },
+    {
+      "name": "Navigasi Bawah",
+      "kind": "nav",
+      "refersTo": "nav-bar",
+      "description": "NavigationBar 76 di compact; indikator aktif kesumba bersudut 10.",
+      "html": "<nav class=\"ds-nav\"><a class=\"on\"><span class=\"ds-ind\"><svg width=\"26\" height=\"26\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z\"/></svg></span>Beranda</a><a><span class=\"ds-ind\"><svg width=\"26\" height=\"26\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M21 5c-1.1-.35-2.3-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c1.45-1.1 3.55-1.5 5.5-1.5s4.05.4 5.5 1.5c1.45-1.1 3.55-1.5 5.5-1.5 1.17 0 2.39.15 3.5.5V5z\"/></svg></span>Cerita</a></nav>",
+      "css": ".ds-nav{font-family: Lexend, sans-serif;display:flex;height:76px;background:#FFFFFF;align-items:center}.ds-nav a{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:14px;font-weight:500;color:#3C4466;cursor:pointer;text-decoration:none}.ds-ind{display:flex;align-items:center;justify-content:center;width:64px;height:32px;border-radius:10px}.ds-nav a.on{color:#0F1430;font-weight:700}.ds-nav a.on .ds-ind{background:#F07A98;color:#0F1430}.ds-nav a:hover .ds-ind{background:#E1E6F2}.ds-nav a.on:hover .ds-ind{background:#F07A98}.ds-nav a:focus-visible{outline:2px solid #0F1430}"
+    },
+    {
+      "name": "Segmen",
+      "kind": "chip",
+      "refersTo": "segment-selected",
+      "description": "Pilihan segmen tinggi 48; terpilih kesumba.",
+      "html": "<div class=\"ds-seg\"><button class=\"on\">Suku kata</button><button>Kata utuh</button></div>",
+      "css": ".ds-seg{display:flex;border:1px solid #CBD2E4;border-radius:12px;overflow:hidden;max-width:360px}.ds-seg button{font-family: Lexend, sans-serif;flex:1;min-height:48px;background:#FFFFFF;color:#0F1430;border:none;font-size:15px;font-weight:600;cursor:pointer}.ds-seg button+button{border-left:1px solid #CBD2E4}.ds-seg button.on{background:#F07A98;color:#0F1430}.ds-seg button:focus-visible{outline:2px solid #0F1430;outline-offset:-2px}"
+    },
+    {
+      "name": "Bidang Bacaan",
+      "kind": "card",
+      "refersTo": "reading-field",
+      "description": "Teks cerita di bidang polos, dua tinta; baris aktif kunyit 35%, kata dibacakan kesumba.",
+      "html": "<div class=\"ds-read\"><div class=\"ln on\">Pa-da <mark>su-a-tu</mark> ha-ri,</div><div class=\"ln\">Kan-cil ber-te-mu</div><div class=\"ln\">de-ngan Ke-lin-ci.</div></div>",
+      "css": ".ds-read{font-family: Lexend, sans-serif;background:#FFFFFF;border-radius:16px;padding:20px;max-width:360px;font-size:26px;font-weight:500;line-height:1.6;letter-spacing:0.8px;color:#3C4466}.ds-read .ln{padding:0 8px;border-radius:12px}.ds-read .ln.on{background:rgba(242,178,51,0.35);color:#0F1430}.ds-read mark{background:#F07A98;color:#0F1430;border-radius:6px;padding:0 2px}"
+    },
+    {
+      "name": "Isian",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Isian terisi permukaan, garis tipis, fokus tinta 2.",
+      "html": "<label class=\"ds-field\"><span>Nama anak</span><input placeholder=\"Bima\"></label>",
+      "css": ".ds-field{font-family: Lexend, sans-serif;display:flex;flex-direction:column;gap:6px;font-size:16px;color:#3C4466;max-width:360px}.ds-field input{font-family: Lexend, sans-serif;font-size:16px;min-height:48px;padding:0 14px;background:#FFFFFF;color:#0F1430;border:1px solid #CBD2E4;border-radius:12px;outline:none}.ds-field input:focus-visible{border:2px solid #0F1430;padding:0 13px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Tenun Kata",
+    "overview": "Membaca adalah menenun. Setiap kata yang selesai menjadi satu benang, setiap sesi menjadi satu pita kain, dan seminggu menjadi selembar kain milik anak. Benang punya warna tetap per aktivitas, pinggir kain bergaris lurik menjadi tepi panel, dan motif tenun serta batik (kawung, tumpal, ceplok, parang, lurik, ikat) yang digambar dengan kode menjadi avatar dan stiker. Tidak ada maskot, tidak ada jalur level, tidak ada kartu bulat pastel.\n\nDasarnya biru kapas yang dicelup tarum di tema terang dan malam tarum di tema gelap. Benang tetap sama di kedua tema karena teks di atasnya selalu tinta gelap `on-thread`. Bidang datar, tanpa bayangan, sudut tegas 12 sampai 16. Satu huruf, Lexend, untuk semuanya. Permukaan baca hanya memakai dua tinta, dan satu warna saja, kesumba, menandai apa yang sedang aktif.\n\nArea Pendamping memakai dunia yang sama dengan kepadatan lebih tinggi: teks 16, tap target 48, angka dengan skala tetap supaya minggu sepi tidak terlihat setinggi minggu ramai.",
+    "keyCharacteristics": [
+      "Benang berwarna tetap per aktivitas: kunyit Baca, tarum muda Beda Huruf, daun Cerita, jingga Susun, laut Dengar dan Pilih.",
+      "Kesumba hanya untuk keadaan aktif.",
+      "Datar dan tanpa bayangan; kedalaman dari warna bidang dan pinggir kain.",
+      "Sudut tegas 3 sampai 16, tidak ada bentuk pil atau lingkaran pada wadah.",
+      "Lexend variabel di seluruh aplikasi, berat lewat sumbu `wght`.",
+      "Ilustrasi cerita dan motif digambar dengan kode, bergaya datar."
+    ],
+    "rules": [
+      {
+        "name": "The Satu Warna Aktif Rule",
+        "body": "Kesumba hanya menandai hal yang sedang aktif. Tidak pernah dipakai sebagai benang aktivitas, dekorasi, atau status. Karena itu Susun memakai jingga dan warna cerita `pink` dipetakan ke laut.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tanpa Merah Rule",
+        "body": "Tidak ada merah untuk kesalahan anak. \"Coba lagi\" adalah `retry` cokelat kunyit dengan ikon telinga; ThemeData `error` juga dipetakan ke `retry`.",
+        "section": "colors"
+      },
+      {
+        "name": "The Benang Tetap Rule",
+        "body": "Warna benang tidak berubah antara terang dan gelap, dan teks di atasnya selalu `on-thread`. Hanya tombol di atas bidang benang yang memakai tarum dengan teks putih.",
+        "section": "colors"
+      },
+      {
+        "name": "The Sumbu Berat Rule",
+        "body": "Lexend di project ini font variabel, jadi berat selalu dikirim lewat `FontVariation('wght')` sekaligus `fontWeight`. Gaya baru dibuat lewat `AppText`, bukan `TextStyle` lepas.",
+        "section": "typography"
+      },
+      {
+        "name": "The Dua Tinta Rule",
+        "body": "Teks bacaan berdiri di bidang polos (permukaan atau lapisan bacaan), tidak pernah di atas gambar atau pinggir kain, dan hanya memakai dua tinta: `ink` untuk baris aktif dan `sub-ink` untuk baris yang mundur saat penggaris baca menyala. Baris aktif diberi latar kunyit 35%; kata yang sedang dibacakan diberi latar kesumba dengan tinta `on-thread`.",
+        "section": "typography"
+      },
+      {
+        "name": "The Skala Tetap Rule",
+        "body": "Kain minggu (`WeekCloth`) punya tinggi kolom tetap (default 12 baris, 9 di Beranda supaya muat di atas navigasi); lebih dari itu ditulis `+n` di atas kolom. Grafik pendamping (`TrendBars`) berplafon paling sedikit 10 kata dan naik per 5. Tinggi tidak pernah dinormalisasi ke data minggu itu.",
+        "section": "layout"
+      },
+      {
+        "name": "The Kain Datar Rule",
+        "body": "Kedalaman hanya lewat warna bidang dan pinggir kain. Bila sebuah elemen perlu menonjol, ganti bidangnya, jangan beri bayangan.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** pakai kesumba hanya untuk hal yang sedang aktif, dengan tinta `on-thread` (6,83).",
+      "**Do** pakai benang aktivitas sesuai perannya (kunyit Baca, tarum muda Huruf, daun Cerita, jingga Susun, laut Dengar dan Pilih), selalu dengan tinta `on-thread`.",
+      "**Do** beri tap target 56 untuk semua yang disentuh anak dan 48 untuk Area Pendamping.",
+      "**Do** letakkan teks bacaan di bidang polos dengan dua tinta saja, `ink` dan `sub-ink`.",
+      "**Do** jaga skala tetap: kain minggu bertinggi kolom tetap, grafik pendamping berplafon minimal 10 naik per 5.",
+      "**Do** temani setiap warna status dengan ikon.",
+      "**Do** satu `PrimaryAction` per layar; aksi lain memakai `QuietAction`.",
+      "**Do** pakai `Pal.of(context)` untuk warna yang berubah tema dan `Thread` untuk warna benang."
+    ],
+    "donts": [
+      "**Don't** pakai merah untuk kesalahan anak, termasuk lewat `error` bawaan Material.",
+      "**Don't** pakai kesumba sebagai benang aktivitas, warna kategori, atau dekorasi.",
+      "**Don't** beri bayangan pada panel, tombol, atau navigasi.",
+      "**Don't** letakkan teks di atas pinggir kain atau di atas ilustrasi.",
+      "**Don't** normalisasi tinggi kain minggu atau grafik ke data minggu itu.",
+      "**Don't** pakai warna penanda huruf varian `-on-thread` di bawah ukuran suku kata (letter-d di kunyit hanya 4,16).",
+      "**Don't** kembali ke maskot, jalur level, atau kartu bulat pastel."
+    ]
+  }
+}

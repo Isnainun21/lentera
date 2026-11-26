@@ -1,13 +1,16 @@
+import 'package:flutter/painting.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../content/content.dart';
 import '../core/db/database.dart';
 import '../core/db/repository.dart';
+import '../core/design/tokens.dart';
 import '../core/speech/speech_ports.dart';
 import '../core/sync/supabase_gateway.dart';
 import '../core/sync/sync_engine.dart';
 import '../domain/child.dart';
+import '../domain/practice/models.dart';
 import '../domain/progress/stats.dart';
 
 // Diisi di main dan di tes lewat override.
@@ -91,3 +94,42 @@ class PriorityWords extends Notifier<List<String>> {
   void add(String id) => state = {...state, id}.toList();
   void clear() => state = const [];
 }
+
+/// Jenis sesi per id, untuk mewarnai benang dan memisahkan statistik.
+final sessionKindsProvider = Provider<Map<String, String>>((ref) {
+  final sessions = ref.watch(sessionsProvider).value ?? const <PracticeSession>[];
+  return {for (final s in sessions) s.id: s.kind};
+});
+
+/// Kain minggu ini: per hari (Senin = 0), satu warna benang untuk setiap kata atau soal yang selesai.
+final weekClothProvider = Provider<List<List<Color>>>((ref) {
+  final attempts = ref.watch(attemptsProvider).value ?? const <AttemptRecord>[];
+  final kinds = ref.watch(sessionKindsProvider);
+  final start = ProgressStats.startOfWeek(DateTime.now());
+  final days = List.generate(7, (_) => <Color>[]);
+  final seen = <String>{};
+  final finished = attempts.where((a) => a.finished).toList()..sort((a, b) => a.occurredAt.compareTo(b.occurredAt));
+  for (final a in finished) {
+    if (!seen.add('${a.sessionId}|${a.wordId}')) continue;
+    final local = a.occurredAt.toLocal();
+    final index = DateTime(local.year, local.month, local.day).difference(start).inDays;
+    if (index >= 0 && index < 7) days[index].add(Thread.forKind(kinds[a.sessionId] ?? 'reading'));
+  }
+  return days;
+});
+
+/// Kata yang pernah diselesaikan anak di latihan apa pun. Untuk Kamus Kataku, tanpa penilaian benar atau salah.
+final learnedWordsProvider = Provider<List<Word>>((ref) {
+  final attempts = ref.watch(attemptsProvider).value ?? const <AttemptRecord>[];
+  final content = ref.watch(contentProvider);
+  final ids = <String>{for (final a in attempts) if (a.finished) a.wordId};
+  return [for (final w in content.words) if (ids.contains(w.id)) w];
+});
+
+/// Sesi baca yang belum selesai, untuk tombol Lanjut Baca dan slot benang di Beranda.
+final resumableProvider = FutureProvider<ResumableSession?>((ref) async {
+  final child = ref.watch(activeChildProvider);
+  final open = ref.watch(hasOpenSessionProvider).value ?? false;
+  if (child == null || !open) return null;
+  return ref.watch(repositoryProvider).openSession(child.id, 'reading');
+});
